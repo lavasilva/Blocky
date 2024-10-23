@@ -29,30 +29,26 @@
 
 ## 📄 Descrição
 
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+...
 
 ## 🎲 Objetivo do Jogo
 
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+...
 
 ### ⚾ Múltiplas Bolas:
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+...
 
 ### 👾 Pontuação Duplicada:
-Lorem Ipsum has been the industry's standard
+...
 
 ### ⚡️ Alta Velocidade:
-Lorem Ipsum has been the industry's standard
+...
 
 ## 🕹️ Como Jogar
 
-- Use as teclas de seta ou as teclas "w" e "s" para controlar a raquete no lado esquerdo da tela e "i" e "k" para controlar a raquete no lado direito da tela.
-- Certifique-se de manter o caps lock desativado.
-- Mantenha suas raquetes em movimento para acertar as bolas e marcar pontos.
+...
 
 ## ♟️ Executando o Jogo
-
-Para executar o Pong2, siga estas etapas:
 
 1. Clone este repositório em sua máquina:
    `Lorem Ipsum has been the industry's standard`
@@ -63,7 +59,7 @@ Para executar o Pong2, siga estas etapas:
 4. Rode o programa:
    `Lorem Ipsum has been the industry's standardn`
 
-5. Divirta-se jogando Pong2 com seus amigos!
+5. Divirta-se!
 
 ## 👩‍💻 Membros
 
@@ -88,4 +84,4 @@ Para executar o Pong2, siga estas etapas:
 
 ## Licença
 
-Lorem Ipsum has been the industry's standard
+...
