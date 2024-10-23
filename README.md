@@ -1,20 +1,91 @@
-# cli-lib
-Command Line Interface library, for developing CLI applications and games in C. It has functions to access keyboard, screen and manage timing tasks.
+<p align="center">
+  <img
+    src="https://img.shields.io/badge/Status-Em%20desenvolvimento-green?style=flat-square"
+    alt="Status"
+  />
+</p>
 
-## Requirements
-- This library works with the follwing OS:
-   - Linux based (Ubuntu, etc)
-   - MacOS
-- It is necessary to have GCC installed.
+<p align="center">
+  <img
+    src="https://img.shields.io/github/repo-size/Sofia-Saraiva/Semester3-CESAR-School?style=flat"
+    alt="Repository Size"
+  />
+  <img
+    src="https://img.shields.io/github/languages/count/Sofia-Saraiva/Semester3-CESAR-School?style=flat&logo=python"
+    alt="Language Count"
+  />
+  <img
+    src="https://img.shields.io/github/commit-activity/t/Sofia-Saraiva/Semester3-CESAR-School?style=flat&logo=github"
+    alt="Commit Activity"
+  />
+  <a href="LICENSE.md"
+    ><img
+      src="https://img.shields.io/github/license/Sofia-Saraiva/Semester3-CESAR-School"
+      alt="License"
+  /></a>
+</p>
 
-## Usage 
-The file `main.c` has an example of how to use the Keyboard, Screen nd Timer functions. 
+## 🖥️ XYZ
 
-To build this example via command line, just switch to library root directory and type the following command:
-```
-$ gcc ./src/*.c -I./include -o cli-lib-example
-```
+## 📄 Descrição
 
-To use this library to create your own apps, simply add source and header files to your project and compile it together with your own code, 
-replacing the main.c file to your own.
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
 
+## 🎲 Objetivo do Jogo
+
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+
+### ⚾ Múltiplas Bolas:
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+
+### 👾 Pontuação Duplicada:
+Lorem Ipsum has been the industry's standard
+
+### ⚡️ Alta Velocidade:
+Lorem Ipsum has been the industry's standard
+
+## 🕹️ Como Jogar
+
+- Use as teclas de seta ou as teclas "w" e "s" para controlar a raquete no lado esquerdo da tela e "i" e "k" para controlar a raquete no lado direito da tela.
+- Certifique-se de manter o caps lock desativado.
+- Mantenha suas raquetes em movimento para acertar as bolas e marcar pontos.
+
+## ♟️ Executando o Jogo
+
+Para executar o Pong2, siga estas etapas:
+
+1. Clone este repositório em sua máquina:
+   `Lorem Ipsum has been the industry's standard`
+
+3. Compile o programa:
+   `Lorem Ipsum has been the industry's standard`
+
+4. Rode o programa:
+   `Lorem Ipsum has been the industry's standardn`
+
+5. Divirta-se jogando Pong2 com seus amigos!
+
+## 👩‍💻 Membros
+
+<ul>
+  <li>
+    <a href="">Fabi</a> -
+    fcsls@cesar.school 📩
+  </li>
+  <li>
+    <a href="">Ju</a> -
+    jmst@cesar.school 📩
+  </li>
+  <li>
+    <a href="https://github.com/lavasilva">Lavi</a> -
+    lmfs@cesar.school 📩
+  </li>
+</ul>
+
+<table>
+
+</table>
+
+## Licença
+
+Lorem Ipsum has been the industry's standard
