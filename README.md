@@ -79,6 +79,10 @@
 </ul>
 
 <table>
+![fabi](https://github.com/user-attachments/assets/ccf9707a-2110-4d24-9a0a-f2f7d42afa2e)
+![ju](https://github.com/user-attachments/assets/f28327ad-d5a3-4050-98fc-6662fe8b43f7)
+![eu](https://github.com/user-attachments/assets/5206b958-0e75-4dcf-b6ad-eaa131d506bb)
+
 
 </table>
 
