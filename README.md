@@ -61,29 +61,50 @@
 
 5. Divirta-se!
 
-## 👩‍💻 Membros
+## 👩‍💻 Membros & Perfis do GitHub
 
 <ul>
   <li>
-    <a href="">Fabi</a> -
+    <a href="https://github.com/fabianacoelhoo">Fabiana Coelho </a> -
     fcsls@cesar.school 📩
   </li>
   <li>
-    <a href="">Ju</a> -
+    <a href="https://github.com/juliamariateixeiraa">Julia Maria Teixeira </a> -
     jmst@cesar.school 📩
   </li>
   <li>
-    <a href="https://github.com/lavasilva">Lavi</a> -
+    <a href="https://github.com/lavasilva">Lavínia Maranhão </a> -
     lmfs@cesar.school 📩
   </li>
 </ul>
 
 <table>
-![fabi](https://github.com/user-attachments/assets/ccf9707a-2110-4d24-9a0a-f2f7d42afa2e)
-![ju](https://github.com/user-attachments/assets/f28327ad-d5a3-4050-98fc-6662fe8b43f7)
-![eu](https://github.com/user-attachments/assets/5206b958-0e75-4dcf-b6ad-eaa131d506bb)
-
-
+  <tr>
+    <td align="center">
+      <a href="https://github.com/fabianacoelhoo">
+        <img src="https://github.com/user-attachments/assets/51c785aa-16b1-4489-8498-9760850f64f7" width="100px;" alt="Foto de Fabiana"/><br>
+        <sub>
+          <b> Fabiana Coelho </b>
+        </sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/juliamariateixeiraa">
+        <img src="https://github.com/user-attachments/assets/39749d5b-f523-4822-b0df-79a3915e4667" width="100px;" alt="Foto de Julia"/><br>
+        <sub>
+          <b>Julia Maria Teixeira</b>
+        </sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="https://github.com/lavasilva">
+        <img src="https://github.com/user-attachments/assets/7167573c-3fbf-4b36-b6e5-e3aad1548397" width="100px;" alt="Foto de Lavínia"/><br>
+        <sub>
+          <b>Lavínia Maranhão</b>
+        </sub>
+      </a>
+    </td>
+  </tr>
 </table>
 
 ## Licença
