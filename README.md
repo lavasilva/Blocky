@@ -35,15 +35,6 @@
 
 ...
 
-### ⚾ Múltiplas Bolas:
-...
-
-### 👾 Pontuação Duplicada:
-...
-
-### ⚡️ Alta Velocidade:
-...
-
 ## 🕹️ Como Jogar
 
 ...
@@ -110,3 +101,5 @@
 ## Licença
 
 ...
+
+## ⚾👾⚡️🕹️♟️🎲
