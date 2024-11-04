@@ -8,7 +8,7 @@ void exibirTelaInicial() {
     // Exibe o título 
     printf("############################################################\n");
     printf("#                                                          #\n");
-    printf("#                 BEM-VINDO AO TETRIS MASTER               #\n");
+    printf("#                 BEM-VINDO AO TETRIS                      #\n");
     printf("#                                                          #\n");
     printf("############################################################\n");
     
