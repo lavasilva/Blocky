@@ -10,13 +10,16 @@ void exibirTelaInicial() {
 
     // Exibe o título 
     printf("############################################################\n");
-    printf("#                                                          #\n");
-    printf("#                 BEM-VINDO AO TETRIS                      #\n");
-    printf("#                                                          #\n");
+   printf("████████╗███████╗████████╗██████╗░██╗░██████╗\n");
+    printf("╚══██╔══╝██╔════╝╚══██╔══╝██╔══██╗██║██╔════╝\n");
+    printf("░░░██║░░░█████╗░░░░░██║░░░██████╔╝██║╚█████╗░\n");
+    printf("░░░██║░░░██╔══╝░░░░░██║░░░██╔══██╗██║░╚═══██╗\n");
+    printf("░░░██║░░░███████╗░░░██║░░░██║░░██║██║██████╔╝\n");
+    printf("░░░╚═╝░░░╚══════╝░░░╚═╝░░░╚═╝░░╚═╝╚═╝╚═════╝░\n");
     printf("############################################################\n");
     
     printf("\nPrepare-se para uma partida emocionante de TETRIS!\n");
-    printf("Pressione ENTER para começar...\n");
+    printf("Pressione ENTER...\n");
     
     // Aguarda o usuário pressionar Enter para continuar
     getchar();
