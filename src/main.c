@@ -4,7 +4,6 @@
 #include "screen.h" // Inclui os cabeçalhos em vez dos arquivos .c
 #include "timer.h"
 #include "keyboard.h"
-#include "tetrominos.h" // Inclusão da biblioteca dos tetrominos
 
 // Função para exibir a tela inicial
 void exibirTelaInicial() {
@@ -53,36 +52,34 @@ void exibirInstrucoes() {
     getchar(); // Espera o usuário pressionar ENTER para continuar
 }
 
+// Função para desenhar a borda do jogo
+void desenharBorda() {
+    system("clear"); // Limpa a tela
+
+    // Desenha a borda superior
+    printf("===========================================\n");
+
+    // Desenha as laterais e a parte de dentro do jogo
+    for (int i = 0; i < 20; i++) {  // Ajuste o número de linhas conforme necessário
+        printf("||                                         ||\n");
+    }
+
+    // Desenha a borda inferior
+    printf("===========================================\n");
+}
+
 int main() {
     exibirTelaInicial(); // Exibe a tela inicial
     exibirInstrucoes();  // Exibe as instruções antes de começar o jogo
 
-    // Inicializa os tetrominos
-    inicializarTetrominos();
-
     // Aqui a gente inicia o jogo
     printf("Iniciando o jogo...\n");
 
-    // Chama a função para desenhar a borda
-    screenInit(1); // Inicializa a tela com bordas
-    screenDrawBorders(); // Desenha as bordas após o início do jogo
-    
-    // Aqui você pode adicionar o código do jogo dentro da borda desenhada
+    // Desenha a borda para o jogo
+    desenharBorda();
 
-    // Por enquanto, apenas exibe o tetromino "I" na tela para fins de teste
-    printf("Exibindo o Tetromino 'I':\n");
-    for (int i = 0; i < TETROMINO_SIZE; i++) {
-        for (int j = 0; j < TETROMINO_SIZE; j++) {
-            if (tetrominos[0][i][j] == 1) {
-                printf("█"); // Representação de bloco do tetromino
-            } else {
-                printf(" "); // Espaço vazio
-            }
-        }
-        printf("\n");
-    }
-
-    // O código do jogo vai aqui...
+    // Aqui o jogo pode ser inserido dentro da borda
+    // O código do jogo será inserido após isso
 
     return 0;
 }
