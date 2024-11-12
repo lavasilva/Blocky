@@ -7,11 +7,11 @@
 #define COLUNAS 10
 #define LINHAS 20
 
-// Definição temporária de Peca (ajuste conforme a estrutura original)
+// Definição de Peca (estrutura com forma de 4x4)
 typedef struct {
-    int largura;
-    int altura;
-    int forma[4][4];
+    int largura;          // Largura da peça
+    int altura;           // Altura da peça
+    int forma[4][4];      // Forma da peça (matriz 4x4)
 } Peca;
 
 // Terminal control sequences
@@ -54,7 +54,7 @@ typedef enum {BLACK, RED, GREEN, BROWN, BLUE, MAGENTA, CYAN, LIGHTGRAY,
         DARKGRAY, LIGHTRED, LIGHTGREEN, YELLOW, LIGHTBLUE, 
         LIGHTMAGENTA, LIGHTCYAN, WHITE} screenColor; 
 
-// Functions for screen management
+// Funções para o gerenciamento da tela
 static inline void screenHomeCursor() {
     printf("%s%s", ESC, HOMECURSOR);
 }
@@ -93,6 +93,5 @@ void screenRender();                                        // Função para ren
 
 void screenBoxEnable();
 void screenBoxDisable();
-
 
 #endif /* __SCREEN_H__ */
