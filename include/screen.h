@@ -87,7 +87,7 @@ void screenSetColor(screenColor fg, screenColor bg);
 // Funções específicas para o jogo Tetris
 void screenDrawBorders(int linhas, int colunas);            // Função para desenhar as bordas do jogo
 void screenDrawTabuleiro(int tabuleiro[][COLUNAS], int linhas, int colunas);  // Função para desenhar o tabuleiro do jogo
-void screenDrawPiece(Peca pecaAtual, int x, int y);         // Função para desenhar a peça na posição especificada
+void screenDrawPiece(struct Peca pecaAtual, int x, int y); // Função para desenhar a peça na posição especificada
 void screenRender();                                        // Função para renderizar a tela
 
 void screenBoxEnable();
