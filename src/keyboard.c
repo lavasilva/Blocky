@@ -5,8 +5,7 @@
 static struct termios initialSettings, newSettings;
 static int peekCharacter = -1;
 
-void keyboardInit()
-{
+void keyboardInit() {
     tcgetattr(0, &initialSettings);
     newSettings = initialSettings;
     newSettings.c_lflag &= ~ICANON; // Desabilita o modo canônico
@@ -17,13 +16,11 @@ void keyboardInit()
     tcsetattr(0, TCSANOW, &newSettings);
 }
 
-void keyboardDestroy()
-{
+void keyboardDestroy() {
     tcsetattr(0, TCSANOW, &initialSettings);
 }
 
-int keyhit()
-{
+int keyboardHit() {  // Função para verificar se uma tecla foi pressionada
     unsigned char ch;
     int nread;
 
@@ -36,8 +33,7 @@ int keyhit()
     newSettings.c_cc[VMIN] = 1;
     tcsetattr(0, TCSANOW, &newSettings);
 
-    if (nread == 1)
-    {
+    if (nread == 1) {
         peekCharacter = ch;
         return 1;
     }
@@ -45,12 +41,10 @@ int keyhit()
     return 0;
 }
 
-int readch()
-{
+int keyboardRead() {  // Função para ler a tecla pressionada
     char ch;
 
-    if (peekCharacter != -1)
-    {
+    if (peekCharacter != -1) {
         ch = peekCharacter;
         peekCharacter = -1;
         return ch;
