@@ -54,7 +54,7 @@ void screenDrawTabuleiro(int tabuleiro[][COLUNAS], int linhas, int colunas) {
 }
 
 // Função para desenhar a peça na posição especificada
-void screenDrawPiece(Peca pecaAtual, int x, int y) {
+void screenDrawPiece(struct Peca pecaAtual, int x, int y) {
     for (int i = 0; i < pecaAtual.altura; i++) {
         for (int j = 0; j < pecaAtual.largura; j++) {
             if (pecaAtual.forma[i][j]) {
