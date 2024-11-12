@@ -1,15 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h> // Para a função sleep() em Unix /Linux
-#include "screen.h" // Inclui os cabeçalhos em vez dos arquivos .c
+#include <unistd.h>
+#include <time.h>        // Inclui o cabeçalho para a função time()
+#include "screen.h"
 #include "timer.h"
 #include "keyboard.h"
 
-// Definindo o tamanho do tabuleiro
 #define LINHAS 20
 #define COLUNAS 10
 
-// Definindo os sete tipos de peças (tetrominos)
 int tetrominos[7][4][4] = {
     {{1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}, // I
     {{1, 1, 1, 0}, {0, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}, // T
@@ -21,32 +20,27 @@ int tetrominos[7][4][4] = {
 };
 
 int tabuleiro[LINHAS][COLUNAS] = {0};  // Inicializa o tabuleiro com 0s
-int peçaAtual[4][4];  // A peça que está caindo
-int x, y;  // Posição da peça
+Peca peçaAtual;  // A peça que está caindo, declarada como Peca
+int x, y;
 
-// Função para exibir a tela inicial
 void exibirTelaInicial() {
-    system("clear"); // Limpa o terminal (ajuste para "cls" se estiver no Windows)
-    
-    // Exibe o título
+    system("clear");
     printf("########################### #################################\n");
     printf("████████╗███████╗████████╗██████╗░██╗░███████╗\n ");
     printf("╚══██╔══╝██╔════╝╚══██╔══╝██╔══██╗██║██╔════╝\n ");
     printf("░░░██║░░░█████╗░░░░░██║░░░██████╔╝██║╚█████╗░\n ");
     printf("░░░██║░░░██╔══╝░░░░░██║░░░██╔══██╗██║░╚═══██╗\n ");
     printf("░░░██║░░░███████╗░░░██║░░░██║░░██║░░██║██║██║█████╔╝\n ");
-    printf("░░░╚═╝░░░╚══════╝░░░╚═╝░░░╚═╝░░╚═╝╚═╝╚═ ════╝░\n ");
+    printf("░░░╚═╝░░░╚══════╝░░░╚═╝░░░╚═╝░░╚═╝╚═ ════╝░\n ");
     printf("######################################## #############\n");
     printf("\nPrepare-se para uma partida emocionante de TETRIS!\n");
     printf("Pressione ENTER...\n");
 
-    // Aguarde o usuário iniciar
     getchar();
 }
 
-// Função para exibir as instruções do jogo
 void exibirInstrucoes() {
-    system("clear"); // Limpa o terminal para as instruções
+    system("clear");
     printf("############################################################\n");
     printf("#                                                          #\n");
     printf("#                   INSTRUÇÕES DO TETRIS                   #\n");
@@ -68,95 +62,56 @@ void exibirInstrucoes() {
     printf("#  Pressione ENTER para começar o jogo!                    #\n");
     printf("#                                                          #\n");
     printf("############################################################\n");
-    getchar(); // Espera o usuário pressionar ENTER para continuar
+    getchar();
 }
 
-// Função para inicializar a peça
 void inicializarPeça() {
-    int tipo = rand() % 7;  // Escolhe um tipo de peça aleatoriamente
+    int tipo = rand() % 7;
+    peçaAtual.altura = 4;
+    peçaAtual.largura = 4;
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            peçaAtual[i][j] = tetrominos[tipo][i][j];
+            peçaAtual.forma[i][j] = tetrominos[tipo][i][j];
         }
     }
-    x = COLUNAS / 2 - 2;  // Posição inicial no centro do tabuleiro
-    y = 0;  // Iniciar no topo
+    x = COLUNAS / 2 - 2;
+    y = 0;
 }
 
-// Função para verificar colisões
 int verificarColisao() {
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            if (peçaAtual[i][j]) {
+            if (peçaAtual.forma[i][j]) {
                 if (y + i >= LINHAS || x + j < 0 || x + j >= COLUNAS || tabuleiro[y + i][x + j]) {
-                    return 1;  // Colidiu com algo
+                    return 1;
                 }
             }
         }
     }
-    return 0;  // Não colidiu
+    return 0;
 }
 
-// Função para rotacionar a peça
 void rotacionarPeça() {
     int temp[4][4];
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            temp[i][j] = peçaAtual[3 - j][i];  // Rotaciona a peça 90 graus
+            temp[i][j] = peçaAtual.forma[3 - j][i];
         }
     }
-
-    // Verificar se a rotação é válida
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
             if (temp[i][j] && (y + i >= LINHAS || x + j < 0 || x + j >= COLUNAS || tabuleiro[y + i][x + j])) {
-                return;  // Não pode rotacionar
+                return;
             }
         }
     }
-
-    // Se a rotação é válida, atualizar a peça
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            peçaAtual[i][j] = temp[i][j];
+            peçaAtual.forma[i][j] = temp[i][j];
         }
     }
 }
 
-// Função para mover a peça para a esquerda
-void moverEsquerda() {
-    x--;
-    if (verificarColisao()) {
-        x++;  // Reverter o movimento
-    }
-}
-
-// Função para mover a peça para a direita
-void moverDireita() {
-    x++;
-    if (verificarColisao()) {
-        x--;  // Reverter o movimento
-    }
-}
-
-// Função para mover a peça para baixo
-void moverAbaixo() {
-    y++;
-    if (verificarColisao()) {
-        y--;  // Reverter o movimento
-        // Adicionar a peça no tabuleiro e gerar uma nova peça
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                if (peçaAtual[i][j]) {
-                    tabuleiro[y + i][x + j] = 1;  // Preencher o tabuleiro
-                }
-            }
-        }
-        inicializarPeça();  // Gerar nova peça
-    }
-}
-
-// Função para atualizar a tela
 void atualizarTela() {
     screenClear();
     screenDrawBorders(LINHAS, COLUNAS);
@@ -166,31 +121,23 @@ void atualizarTela() {
 }
 
 int main() {
-    exibirTelaInicial();  // Exibe a tela inicial
-    exibirInstrucoes();   // Exibe as instruções do jogo
-    
-    srand(time(NULL));    // Inicializa o gerador de números aleatórios
-    inicializarPeça();    // Inicializa a primeira peça
+    exibirTelaInicial();
+    exibirInstrucoes();
+
+    srand(time(NULL));
+    inicializarPeça();
 
     while (1) {
-        atualizarTela();  // Atualiza a tela
-
+        atualizarTela();
         if (keyboardHit()) {
             char tecla = keyboardRead();
-            if (tecla == 'q') {
-                break;  // Sai do jogo
-            } else if (tecla == 'a') {
-                moverEsquerda();
-            } else if (tecla == 'd') {
-                moverDireita();
-            } else if (tecla == 's') {
-                moverAbaixo();
-            } else if (tecla == 'w') {
-                rotacionarPeça();
-            }
+            if (tecla == 'q') break;
+            if (tecla == 'a') moverEsquerda();
+            if (tecla == 'd') moverDireita();
+            if (tecla == 's') moverAbaixo();
+            if (tecla == 'w') rotacionarPeça();
         }
-        
-        sleep(1);  // Controla a velocidade do jogo
+        sleep(1);
     }
 
     return 0;
