@@ -22,13 +22,11 @@ int tetrominos[7][4][4] = {
 
 int tabuleiro[LINHAS][COLUNAS] = {0};  // Inicializa o tabuleiro com 0s
 
-// Definindo a estrutura Peca
-typedef struct {
-    int forma[4][4];
-} Peca;
-
-Peca peçaAtual;  // A peça que está caindo
+// Variáveis da peça atual e posição
+struct Peca peçaAtual;  
 int x, y;  // Posição da peça
+
+// (Demais funções permanecem as mesmas)
 
 // Função para exibir a tela inicial
 void exibirTelaInicial() {
