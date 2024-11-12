@@ -1,33 +1,31 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h> // Para a função sleep()
-#include <screen.c> // bibliotecas de Tiaguinho
-#include <timer.c>
-#include <keyboard.c>
+#include <unistd.h> // Para a função sleep() em Unix /Linux
+#include "screen.h" // Inclui os cabeçalhos em vez dos arquivos .c
+#include "timer.h"
+#include "keyboard.h"
 
 void exibirTelaInicial() {
-    system("clear"); // Limpa o terminal
-
-    // Exibe o título 
-    printf("############################################################\n");
-    printf("████████╗███████╗████████╗██████╗░██╗░██████╗\n");
-    printf("╚══██╔══╝██╔════╝╚══██╔══╝██╔══██╗██║██╔════╝\n");
-    printf("░░░██║░░░█████╗░░░░░██║░░░██████╔╝██║╚█████╗░\n");
-    printf("░░░██║░░░██╔══╝░░░░░██║░░░██╔══██╗██║░╚═══██╗\n");
-    printf("░░░██║░░░███████╗░░░██║░░░██║░░██║██║██████╔╝\n");
-    printf("░░░╚═╝░░░╚══════╝░░░╚═╝░░░╚═╝░░╚═╝╚═╝╚═════╝░\n");
-    printf("############################################################\n");
+    system("clear"); // Limpa o terminal (ajuste para "cls" se estiver no Windows)
     
+    // Exibe o título
+    printf("########################### #################################\n");
+    printf("████████╗███████╗████████╗██████╗░██╗░███████╗\n ");
+    printf("╚══██╔══╝██╔════╝╚══██╔══╝██╔══██╗██║██╔════╝\n ");
+    printf("░░░██║░░░█████╗░░░░░██║░░░██████╔╝██║╚█████╗░\n ");
+    printf("░░░██║░░░██╔══╝░░░░░██║░░░██╔══██╗██║░╚═══██╗\n ");
+    printf("░░░██║░░░███████╗░░░██║░░░██║░░██║░░██║██║██║█████╔╝\n ");
+    printf("░░░╚═╝░░░╚══════╝░░░╚═╝░░░╚═╝░░╚═╝╚═╝╚═ ════╝░\n ");
+    printf("######################################## #############\n");
     printf("\nPrepare-se para uma partida emocionante de TETRIS!\n");
     printf("Pressione ENTER...\n");
-    
-    // Aguarda o usuário pressionar Enter para continuar
+
+    // Aguarde o usuário iniciar
     getchar();
 }
 
 void exibirInstrucoes() {
     system("clear"); // Limpa o terminal para as instruções
-
     printf("############################################################\n");
     printf("#                                                          #\n");
     printf("#                   INSTRUÇÕES DO TETRIS                   #\n");
@@ -49,16 +47,23 @@ void exibirInstrucoes() {
     printf("#  Pressione ENTER para começar o jogo!                    #\n");
     printf("#                                                          #\n");
     printf("############################################################\n");
-
     getchar(); // Espera o usuário pressionar ENTER para continuar
 }
 
 int main() {
     exibirTelaInicial();
     exibirInstrucoes(); // Exibe as instruções antes de começar o jogo
-    
+
     // Aqui a gente inicia o jogo
     printf("Iniciando o jogo...\n");
 
+    // Chama a função para desenhar a borda
+    screenDrawBorders();
+    
+    // Aqui você pode adicionar o código do jogo dentro da borda desenhada
+
+    // O código do jogo vai aqui...
+
     return 0;
 }
+
