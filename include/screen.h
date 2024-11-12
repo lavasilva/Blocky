@@ -1,96 +1,113 @@
-#ifndef __SCREEN_H__
-#define __SCREEN_H__
+#include "screen.h"
 
-#include <stdio.h>
+// Função para desenhar as bordas do jogo com dimensões variáveis
+void screenDrawBorders(int linhas, int colunas) {
+    char hbc = BOX_HLINE;
+    char vbc = BOX_VLINE;
 
-// Defina COLUNAS e LINHAS se não estiverem definidos em outro lugar
-#define COLUNAS 10
-#define LINHAS 20
+    screenClear();
+    screenBoxEnable();
 
-struct Peca {
-    int largura;          // Largura da peça
-    int altura;           // Altura da peça
-    int forma[4][4];      // Forma da peça (matriz 4x4)
-};
-
-// Terminal control sequences
-#define ESC            "\033"
-#define NORMALTEXT     "[0m"
-#define BOLDTEXT       "[1m"
-#define ITALICTEXT     "[3m"
-#define BLINKTEXT      "[5m"
-#define REVERSETEXT    "[7m"
-#define HOMECURSOR     "[f"
-#define SHOWCURSOR     "[?25h"
-#define HIDECURSOR     "[?25l"
-#define CLEARSCREEN    "[2J"
-
-// BOX Drawing - Unix like terminals
-#define BOX_ENABLE     "(0"
-#define BOX_DISABLE    "(B"
-#define BOX_VLINE      0x78
-#define BOX_HLINE      0x71
-#define BOX_UPLEFT     0x6C
-#define BOX_UPRIGHT    0x6B
-#define BOX_DWNLEFT    0x6D
-#define BOX_DWNRIGHT   0x6A
-#define BOX_CROSS      0x6E
-#define BOX_TLEFT      0X74
-#define BOX_TRIGHT     0X75
-#define BOX_TUP        0X77
-#define BOX_TDOWN      0X76
-#define BOX_DIAMOND    0x60
-#define BOX_BLOCK      0x61
-#define BOX_DOT        0x7E
-
-// Screen constants
-#define MINX           1
-#define MINY           1
-#define MAXX           80
-#define MAXY           24
-
-typedef enum {BLACK, RED, GREEN, BROWN, BLUE, MAGENTA, CYAN, LIGHTGRAY,
-        DARKGRAY, LIGHTRED, LIGHTGREEN, YELLOW, LIGHTBLUE, 
-        LIGHTMAGENTA, LIGHTCYAN, WHITE} screenColor; 
-
-// Funções para o gerenciamento da tela
-static inline void screenHomeCursor() {
-    printf("%s%s", ESC, HOMECURSOR);
+    // Habilita o modo de desenho de caixas no terminal
+void screenBoxEnable() {
+    printf("%s%s", ESC, BOX_ENABLE);
 }
 
-static inline void screenShowCursor() {
-    printf("%s%s", ESC, SHOWCURSOR);
+// Desabilita o modo de desenho de caixas no terminal
+void screenBoxDisable() {
+    printf("%s%s", ESC, BOX_DISABLE);
+}
+    
+    // Desenhar a borda superior
+    screenGotoxy(MINX, MINY);
+    printf("%c", BOX_UPLEFT);
+    for (int i = MINX + 1; i < colunas; i++) {
+        screenGotoxy(i, MINY);
+        printf("%c", hbc);
+    }
+    screenGotoxy(colunas, MINY);
+    printf("%c", BOX_UPRIGHT);
+
+    // Desenhar as laterais
+    for (int i = MINY + 1; i < linhas; i++) {
+        screenGotoxy(MINX, i);
+        printf("%c", vbc);
+        screenGotoxy(colunas, i);
+        printf("%c", vbc);
+    }
+
+    // Desenhar a borda inferior
+    screenGotoxy(MINX, linhas);
+    printf("%c", BOX_DWNLEFT);
+    for (int i = MINX + 1; i < colunas; i++) {
+        screenGotoxy(i, linhas);
+        printf("%c", hbc);
+    }
+    screenGotoxy(colunas, linhas);
+    printf("%c", BOX_DWNRIGHT);
+    
+    screenBoxDisable();
 }
 
-static inline void screenHideCursor() {
-    printf("%s%s", ESC, HIDECURSOR);
+// Função para desenhar o tabuleiro do jogo
+void screenDrawTabuleiro(int tabuleiro[][COLUNAS], int linhas, int colunas) {
+    for (int y = 0; y < linhas; y++) {
+        for (int x = 0; x < colunas; x++) {
+            screenGotoxy(x + MINX, y + MINY);
+            if (tabuleiro[y][x]) {
+                printf("%c", BOX_BLOCK);
+            } else {
+                printf(" ");
+            }
+        }
+    }
 }
 
-static inline void screenClear() {
+// Função para desenhar a peça na posição especificada
+void screenDrawPiece(struct Peca pecaAtual, int x, int y) {
+    for (int i = 0; i < pecaAtual.altura; i++) {
+        for (int j = 0; j < pecaAtual.largura; j++) {
+            if (pecaAtual.forma[i][j]) {
+                screenGotoxy(x + j + MINX, y + i + MINY);
+                printf("%c", BOX_BLOCK);
+            }
+        }
+    }
+}
+
+// Função para renderizar a tela (atualiza o buffer do terminal)
+void screenRender() {
+    screenUpdate();
+}
+
+void screenInit(int drawBorders) {
+    screenClear();
+    if (drawBorders) {
+        screenDrawBorders(MAXY, MAXX);
+    }
     screenHomeCursor();
-    printf("%s%s", ESC, CLEARSCREEN);
+    screenHideCursor();
 }
 
-static inline void screenUpdate() {
-    fflush(stdout);
+void screenDestroy() {
+    printf("%s[0;39;49m", ESC); // Reset colors
+    screenSetNormal();
+    screenClear();
+    screenHomeCursor();
+    screenShowCursor();
 }
 
-static inline void screenSetNormal() {
-    printf("%s%s", ESC, NORMALTEXT);
+void screenGotoxy(int x, int y) {
+    x = (x < 0 ? 0 : x >= MAXX ? MAXX - 1 : x);
+    y = (y < 0 ? 0 : y > MAXY ? MAXY : y);
+    printf("%s[%d;%df", ESC, y + 1, x + 1);
 }
 
-void screenInit(int drawBorders);
-void screenDestroy();
-void screenGotoxy(int x, int y);
-void screenSetColor(screenColor fg, screenColor bg);
-
-// Funções específicas para o jogo Tetris
-void screenDrawBorders(int linhas, int colunas);            // Função para desenhar as bordas do jogo
-void screenDrawTabuleiro(int tabuleiro[][COLUNAS], int linhas, int colunas);  // Função para desenhar o tabuleiro do jogo
-void screenDrawPiece(struct Peca pecaAtual, int x, int y); // Função para desenhar a peça na posição especificada
-void screenRender();                                        // Função para renderizar a tela
-
-void screenBoxEnable();
-void screenBoxDisable();
-
-#endif /* __SCREEN_H__ */
+void screenSetColor(screenColor fg, screenColor bg) {
+    char atr[] = "[0;";
+    if (fg > LIGHTGRAY) {
+        atr[1] = '1';
+        fg -= 8;
+    }
+    printf("%s%s%d;%dm", ESC, atr, fg + 30, bg + 40);
+}
