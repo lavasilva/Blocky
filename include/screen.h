@@ -91,4 +91,8 @@ void screenDrawTabuleiro(int tabuleiro[][COLUNAS], int linhas, int colunas);  //
 void screenDrawPiece(Peca pecaAtual, int x, int y);         // Função para desenhar a peça na posição especificada
 void screenRender();                                        // Função para renderizar a tela
 
+void screenBoxEnable();
+void screenBoxDisable();
+
+
 #endif /* __SCREEN_H__ */
