@@ -5,6 +5,23 @@
 #include "timer.h"
 #include "keyboard.h"
 
+// Definindo o tamanho do tabuleiro
+#define LINHAS 20
+#define COLUNAS 10
+
+// Definindo os sete tipos de peças (tetrominos)
+int tetrominos[7][4][4] = {
+    {{1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}, // I
+    {{1, 1, 1, 0}, {0, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}, // T
+    {{1, 1, 0, 0}, {1, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}, // O
+    {{1, 1, 0, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}, // S
+    {{0, 1, 1, 0}, {1, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}, // Z
+    {{1, 0, 0, 0}, {1, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}, // J
+    {{0, 0, 1, 0}, {1, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}  // L
+};
+
+int tabuleiro[LINHAS][COLUNAS] = {0};  // Inicializa o tabuleiro com 0s
+
 // Função para exibir a tela inicial
 void exibirTelaInicial() {
     system("clear"); // Limpa o terminal (ajuste para "cls" se estiver no Windows)
@@ -60,7 +77,7 @@ void desenharBorda() {
     printf("===========================================\n");
 
     // Desenha as laterais e a parte de dentro do jogo
-    for (int i = 0; i < 20; i++) {  // Ajuste o número de linhas conforme necessário
+    for (int i = 0; i < LINHAS; i++) {  // Ajuste o número de linhas conforme necessário
         printf("||                                         ||\n");
     }
 
@@ -68,18 +85,90 @@ void desenharBorda() {
     printf("===========================================\n");
 }
 
+// Função para desenhar o tabuleiro
+void desenharTabuleiro() {
+    for (int i = 0; i < LINHAS; i++) {
+        for (int j = 0; j < COLUNAS; j++) {
+            if (tabuleiro[i][j] == 0) {
+                printf("  ");  // Espaço vazio
+            } else {
+                printf("[]"); // Bloco da peça
+            }
+        }
+        printf("\n");
+    }
+}
+
+// Função para girar a peça
+void girarPeca(int peca[4][4]) {
+    int temp[4][4];
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            temp[j][3 - i] = peca[i][j]; // Realiza a rotação de 90 graus
+        }
+    }
+    // Copia a matriz rotacionada de volta para a peça
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            peca[i][j] = temp[i][j];
+        }
+    }
+}
+
+// Função para mover a peça para baixo
+void moverPecaParaBaixo(int peca[4][4], int *linha, int *coluna) {
+    (*linha)++;
+    if (verificarColisao(peca, *linha, *coluna)) {
+        (*linha)--; // Se houver colisão, retorna a peça para sua posição anterior
+        adicionarPecaAoTabuleiro(peca, *linha, *coluna);
+        gerarNovaPeca();  // Gere uma nova peça
+    }
+}
+
+// Função para verificar colisões
+int verificarColisao(int peca[4][4], int linha, int coluna) {
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            if (peca[i][j] != 0) {
+                if (linha + i >= LINHAS || coluna + j < 0 || coluna + j >= COLUNAS || tabuleiro[linha + i][coluna + j] != 0) {
+                    return 1; // Colidiu com algo
+                }
+            }
+        }
+    }
+    return 0; // Não colidiu
+}
+
+// Função para adicionar a peça ao tabuleiro
+void adicionarPecaAoTabuleiro(int peca[4][4], int linha, int coluna) {
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            if (peca[i][j] != 0) {
+                tabuleiro[linha + i][coluna + j] = 1; // Marca a posição da peça no tabuleiro
+            }
+        }
+    }
+}
+
+// Função para gerar uma nova peça (aleatória)
+void gerarNovaPeca() {
+    // Aqui você deve gerar uma nova peça aleatória
+}
+
+// Função para iniciar o loop do jogo
 int main() {
-    exibirTelaInicial(); // Exibe a tela inicial
-    exibirInstrucoes();  // Exibe as instruções antes de começar o jogo
+    exibirTelaInicial();
+    exibirInstrucoes();
+    desenharBorda();  // Desenha a borda
 
-    // Aqui a gente inicia o jogo
-    printf("Iniciando o jogo...\n");
+    int linha = 0, coluna = COLUNAS / 2 - 2;  // Posição inicial da peça
 
-    // Desenha a borda para o jogo
-    desenharBorda();
-
-    // Aqui o jogo pode ser inserido dentro da borda
-    // O código do jogo será inserido após isso
+    // Loop do jogo
+    while (1) {
+        desenharTabuleiro();
+        moverPecaParaBaixo(pecaAtual, &linha, &coluna); // Mover a peça para baixo
+        usleep(500000);  // Aguarda 0.5 segundos para a próxima atualização
+    }
 
     return 0;
 }
