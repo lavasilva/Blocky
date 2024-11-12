@@ -51,14 +51,15 @@ void exibirInstrucoes() {
 }
 
 int main() {
-    exibirTelaInicial();
-    exibirInstrucoes(); // Exibe as instruções antes de começar o jogo
+    exibirTelaInicial(); // Exibe a tela inicial
+    exibirInstrucoes();  // Exibe as instruções antes de começar o jogo
 
     // Aqui a gente inicia o jogo
     printf("Iniciando o jogo...\n");
 
     // Chama a função para desenhar a borda
-    screenDrawBorders();
+    screenInit(1); // Inicializa a tela com bordas
+    screenDrawBorders(); // Desenha as bordas após o início do jogo
     
     // Aqui você pode adicionar o código do jogo dentro da borda desenhada
 
@@ -66,4 +67,3 @@ int main() {
 
     return 0;
 }
-
