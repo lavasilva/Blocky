@@ -1,6 +1,7 @@
 #include "screen.h"
 
-void screenDrawBorders() {
+// Função para desenhar as bordas do jogo com dimensões variáveis
+void screenDrawBorders(int linhas, int colunas) {
     char hbc = BOX_HLINE;
     char vbc = BOX_VLINE;
 
@@ -10,38 +11,69 @@ void screenDrawBorders() {
     // Desenhar a borda superior
     screenGotoxy(MINX, MINY);
     printf("%c", BOX_UPLEFT);
-    for (int i = MINX + 1; i < MAXX; i++) {
+    for (int i = MINX + 1; i < colunas; i++) {
         screenGotoxy(i, MINY);
         printf("%c", hbc);
     }
-    screenGotoxy(MAXX, MINY);
+    screenGotoxy(colunas, MINY);
     printf("%c", BOX_UPRIGHT);
 
     // Desenhar as laterais
-    for (int i = MINY + 1; i < MAXY; i++) {
+    for (int i = MINY + 1; i < linhas; i++) {
         screenGotoxy(MINX, i);
         printf("%c", vbc);
-        screenGotoxy(MAXX, i);
+        screenGotoxy(colunas, i);
         printf("%c", vbc);
     }
 
     // Desenhar a borda inferior
-    screenGotoxy(MINX, MAXY);
+    screenGotoxy(MINX, linhas);
     printf("%c", BOX_DWNLEFT);
-    for (int i = MINX + 1; i < MAXX; i++) {
-        screenGotoxy(i, MAXY);
+    for (int i = MINX + 1; i < colunas; i++) {
+        screenGotoxy(i, linhas);
         printf("%c", hbc);
     }
-    screenGotoxy(MAXX, MAXY);
+    screenGotoxy(colunas, linhas);
     printf("%c", BOX_DWNRIGHT);
     
     screenBoxDisable();
 }
 
+// Função para desenhar o tabuleiro do jogo
+void screenDrawTabuleiro(int tabuleiro[][COLUNAS], int linhas, int colunas) {
+    for (int y = 0; y < linhas; y++) {
+        for (int x = 0; x < colunas; x++) {
+            screenGotoxy(x + MINX, y + MINY);
+            if (tabuleiro[y][x]) {
+                printf("%c", BOX_BLOCK);
+            } else {
+                printf(" ");
+            }
+        }
+    }
+}
+
+// Função para desenhar a peça na posição especificada
+void screenDrawPiece(Peca pecaAtual, int x, int y) {
+    for (int i = 0; i < pecaAtual.altura; i++) {
+        for (int j = 0; j < pecaAtual.largura; j++) {
+            if (pecaAtual.forma[i][j]) {
+                screenGotoxy(x + j + MINX, y + i + MINY);
+                printf("%c", BOX_BLOCK);
+            }
+        }
+    }
+}
+
+// Função para renderizar a tela (atualiza o buffer do terminal)
+void screenRender() {
+    screenUpdate();
+}
+
 void screenInit(int drawBorders) {
     screenClear();
     if (drawBorders) {
-        screenDrawBorders();
+        screenDrawBorders(MAXY, MAXX);
     }
     screenHomeCursor();
     screenHideCursor();
