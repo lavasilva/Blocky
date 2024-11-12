@@ -7,12 +7,11 @@
 #define COLUNAS 10
 #define LINHAS 20
 
-// Definição de Peca (estrutura com forma de 4x4)
-typedef struct {
+struct Peca {
     int largura;          // Largura da peça
     int altura;           // Altura da peça
     int forma[4][4];      // Forma da peça (matriz 4x4)
-} Peca;
+};
 
 // Terminal control sequences
 #define ESC            "\033"
