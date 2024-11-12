@@ -3,7 +3,7 @@
 
 void keyboardInit();
 void keyboardDestroy();
-int keyhit();  // Verifica se uma tecla foi pressionada
-int readch();  // Lê a tecla pressionada
+int keyboardHit();  // Verifica se uma tecla foi pressionada
+int keyboardRead(); // Lê a tecla pressionada
 
 #endif /* __KEYBOARD_H__ */
