@@ -4,7 +4,7 @@
 #include "screen.h" // Inclui os cabeçalhos em vez dos arquivos .c
 #include "timer.h"
 #include "keyboard.h"
-#include "tetromino.h" // Inclusão da biblioteca dos tetrominos
+#include "tetrominos.h" // Inclusão da biblioteca dos tetrominos
 
 // Função para exibir a tela inicial
 void exibirTelaInicial() {
