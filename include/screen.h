@@ -3,6 +3,17 @@
 
 #include <stdio.h>
 
+// Defina COLUNAS e LINHAS se não estiverem definidos em outro lugar
+#define COLUNAS 10
+#define LINHAS 20
+
+// Definição temporária de Peca (ajuste conforme a estrutura original)
+typedef struct {
+    int largura;
+    int altura;
+    int forma[4][4];
+} Peca;
+
 // Terminal control sequences
 #define ESC            "\033"
 #define NORMALTEXT     "[0m"
