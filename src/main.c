@@ -56,8 +56,10 @@ char tetrominos[7][4][4][4] = {
     }
 };
 
-int level = 1;  // Nível do jogo
-int score = 0;  // Pontuação
+// Variáveis de pontuação e nível
+int score = 0;
+int level = 1;
+int linesCleared = 0;
 
 // Estado do tabuleiro
 int board[WIDTH][HEIGHT];
@@ -74,13 +76,13 @@ Piece currentPiece;
 void exibirTelaInicial() {
     system("clear"); // Limpa o terminal (ajuste para "cls" se estiver no Windows)
     
-    // Exibe o título
+    // Exibe o título em ASCII art
     printf("########################### #################################\n");
     printf("████████╗███████╗████████╗██████╗░██╗░███████╗\n ");
     printf("╚══██╔══╝██╔════╝╚══██╔══╝██╔══██╗██║██╔════╝\n ");
     printf("░░░██║░░░█████╗░░░░░██║░░░██████╔╝██║╚█████╗░\n ");
     printf("░░░██║░░░██╔══╝░░░░░██║░░░██╔══██╗██║░╚═══██╗\n ");
-    printf("░░░██║░░░███████╗░░░██║░░░██║░░██║░░██║██║██║\n ");
+    printf("░░░██║░░░███████╗░░░██║░░░██║░░██║░░██║██║██║█████╔╝\n ");
     printf("░░░╚═╝░░░╚══════╝░░░╚═╝░░░╚═╝░░╚═╝╚═ ════╝░\n ");
     printf("######################################## #############\n");
     printf("\nPrepare-se para uma partida emocionante de TETRIS!\n");
@@ -90,82 +92,42 @@ void exibirTelaInicial() {
     getchar();
 }
 
-// Função para exibir as instruções do jogo
 void exibirInstrucoes() {
     system("clear"); // Limpa o terminal para as instruções
     printf("############################################################\n");
     printf("#                                                          #\n");
     printf("#                   INSTRUÇÕES DO TETRIS                   #\n");
     printf("#                                                          #\n");
-    printf("# Use as setas para mover as peças:                        #\n");
-    printf("#  A: Mover para a Esquerda                                #\n");
-    printf("#  D: Mover para a Direita                                 #\n");
-    printf("#  W: Girar a peça                                         #\n");
-    printf("#  S: Acelerar a queda da peça                             #\n");
+    printf("############################################################\n");
+    printf("#                                                          #\n");
+    printf("#  Como jogar:                                             #\n");
+    printf("#  - Use as teclas para controlar as peças:                #\n");
+    printf("#    -> Tecla 'A' : Move a peça para a esquerda            #\n");
+    printf("#    -> Tecla 'D' : Move a peça para a direita             #\n");
+    printf("#    -> Tecla 'W' : Gira a peça                            #\n");
+    printf("#    -> Tecla 'S' : Acelera a descida da peça              #\n");
+    printf("#                                                          #\n");
+    printf("#  Objetivo:                                               #\n");
+    printf("#  - Complete linhas horizontais para ganhar pontos e      #\n");
+    printf("#    limpar as linhas.                                     #\n");
+    printf("#  - O jogo acaba se as peças chegarem ao topo.            #\n");
+    printf("#                                                          #\n");
+    printf("#  Pressione ENTER para começar o jogo!                    #\n");
     printf("#                                                          #\n");
     printf("############################################################\n");
-
-    printf("\nPressione ENTER para começar...");
-    getchar();
+    getchar(); // Espera o usuário pressionar ENTER para continuar
 }
 
-// Função que verifica se a peça colidiu
-int checkCollision(Piece *piece) {
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            if (tetrominos[piece->type][piece->rotation][i][j]) {
-                int x = piece->x + i;
-                int y = piece->y + j;
-                if (x < 0 || x >= WIDTH || y >= HEIGHT || board[x][y]) {
-                    return 1;  // Colidiu com a borda ou outra peça
-                }
-            }
-        }
-    }
-    return 0;  // Não houve colisão
-}
 
-// Função que coloca a peça no tabuleiro
-void placePiece(Piece *piece) {
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            if (tetrominos[piece->type][piece->rotation][i][j]) {
-                board[piece->x + i][piece->y + j] = 1;  // Marca o tabuleiro com a peça
+    while (1) {
+        if (keyhit()) {
+            int key = readch();
+            if (key == '\n') {
+                break;
             }
         }
     }
 }
-
-// Função que rotaciona a peça
-void rotatePiece() {
-    int oldRotation = currentPiece.rotation;
-    currentPiece.rotation = (currentPiece.rotation + 1) % 4;  // Rotaciona para a próxima posição
-    if (checkCollision(&currentPiece)) {
-        currentPiece.rotation = oldRotation;  // Se houver colisão, volta para a rotação anterior
-    }
-}
-
-// Função que move a peça na horizontal
-void movePiece(int dx) {
-    currentPiece.x += dx;  // Desloca a peça para a esquerda (dx=-1) ou para a direita (dx=1)
-    if (checkCollision(&currentPiece)) {
-        currentPiece.x -= dx;  // Se houver colisão, desfaz o movimento
-    }
-}
-
-// Função que desenha a peça na tela
-void drawPiece(Piece *piece) {
-    screenSetColor(RED, BLACK);  // Define a cor para desenhar a peça
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            if (tetrominos[piece->type][piece->rotation][i][j]) {  // Verifica se a célula da peça está ativa
-                screenGotoxy(SCRSTARTX + (piece->x + i) * BLOCK_SIZE, SCRSTARTY + piece->y + j);  // Calcula a posição na tela
-                printf("[]");  // Desenha o bloco da peça
-            }
-        }
-    }
-}
-
 
 void drawBoard() {
     screenClear();
@@ -173,20 +135,62 @@ void drawBoard() {
     for (int i = 0; i < WIDTH; i++) {
         for (int j = 0; j < HEIGHT; j++) {
             if (board[i][j]) {
-                screenGotoxy(SCRSTARTX + i * BLOCK_SIZE, SCRSTARTY + j);
+                screenGotoxy(i * BLOCK_SIZE, j * BLOCK_SIZE);
                 printf("[]");
             }
         }
     }
-    // Exibe o nível e a pontuação
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 2, SCRSTARTY);
-    printf("Nível: %d", level);
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 2, SCRSTARTY + 1);
-    printf("Pontuação: %d", score);
+    screenUpdate();
+}
+
+void drawPiece(Piece* p) {
+    screenSetColor(RED, BLACK);
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            if (tetrominos[p->type][p->rotation][i][j]) {
+                screenGotoxy((p->x + i) * BLOCK_SIZE, (p->y + j) * BLOCK_SIZE);
+                printf("[]");
+            }
+        }
+    }
+    screenUpdate();
+}
+
+void drawScore() {
+    screenGotoxy(WIDTH * BLOCK_SIZE + 2, 5);
+    printf("PONTUACAO: %d", score);
+    screenGotoxy(WIDTH * BLOCK_SIZE + 2, 6);
+    printf("NIVEL: %d", level);
+    screenUpdate();
+}
+
+int checkCollision(Piece* p) {
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            if (tetrominos[p->type][p->rotation][i][j]) {
+                int x = p->x + i;
+                int y = p->y + j;
+                if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT || board[x][y]) {
+                    return 1;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+void placePiece(Piece* p) {
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            if (tetrominos[p->type][p->rotation][i][j]) {
+                board[p->x + i][p->y + j] = 1;
+            }
+        }
+    }
 }
 
 void removeFullLines() {
-    // Função que remove linhas completas
+    int linesRemoved = 0;
     for (int j = 0; j < HEIGHT; j++) {
         int full = 1;
         for (int i = 0; i < WIDTH; i++) {
@@ -204,7 +208,15 @@ void removeFullLines() {
             for (int i = 0; i < WIDTH; i++) {
                 board[i][0] = 0;
             }
-            score += 100; // Adiciona 100 pontos por linha completa
+            linesRemoved++;
+        }
+    }
+    if (linesRemoved > 0) {
+        linesCleared += linesRemoved;
+        score += linesRemoved * 100;
+        if (linesCleared >= 5) {
+            level++;
+            linesCleared = 0;
         }
     }
 }
@@ -219,6 +231,17 @@ void spawnPiece() {
         printf("Game Over\n");
         exit(0);
     }
+}
+
+void rotatePiece() {
+    int oldRotation = currentPiece.rotation;
+    currentPiece.rotation = (currentPiece.rotation + 1) % 4;
+    if (checkCollision(&currentPiece)) currentPiece.rotation = oldRotation;
+}
+
+void movePiece(int dx) {
+    currentPiece.x += dx;
+    if (checkCollision(&currentPiece)) currentPiece.x -= dx;
 }
 
 void dropPiece() {
@@ -244,12 +267,16 @@ void processInput() {
 }
 
 int main() {
-    exibirTelaInicial();
-    exibirInstrucoes();
     srand(time(NULL));
     screenInit(1);
     keyboardInit();
-    timerInit(500);
+    timerInit(500); // velocidade inicial do jogo
+
+    // Tela inicial
+    exibirTelaInicial();
+
+    // Instruções
+    exibirInstrucoes();
 
     spawnPiece();
 
@@ -260,10 +287,11 @@ int main() {
         }
         drawBoard();
         drawPiece(&currentPiece);
+        drawScore();
         screenUpdate();
     }
 
     screenDestroy();
     keyboardDestroy();
-    return 0;
+    return 0;
 }
