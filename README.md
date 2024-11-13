@@ -42,13 +42,13 @@
 ## ♟️ Executando o Jogo
 
 1. Clone este repositório em sua máquina:
-   `Lorem Ipsum has been the industry's standard`
+   `git clone https://github.com/lavasilva/Tetris.git`
 
 3. Compile o programa:
-   `Lorem Ipsum has been the industry's standard`
+   `gcc ./src/*.c -I./include -o jogar`
 
 4. Rode o programa:
-   `Lorem Ipsum has been the industry's standardn`
+   `gcc ./src/*.c -I./include -o jogar`
 
 5. Divirta-se!
 
