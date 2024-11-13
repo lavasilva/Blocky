@@ -1,7 +1,4 @@
-Gmail	Fabi Souza Leão <fabicoelhodesouzaleao@gmail.com>
-(sem assunto)
-Matheus Martins <matheusmverissimo820@gmail.com>	12 de novembro de 2024 às 19:57
-Para: "fabicoelhodesouzaleao@gmail.com" <fabicoelhodesouzaleao@gmail.com>
+
 #include "screen.h"
 #include "timer.h"
 #include "keyboard.h"
