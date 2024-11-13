@@ -85,9 +85,9 @@ void exibirInstrucoes() {
     printf("#                                                          #\n");
     printf("#  Como jogar:                                             #\n");
     printf("#  - Use as teclas de setas para controlar as peças:       #\n");
-    printf("#    -> Seta para ESQUERDA  : Move a peça para a esquerda  #\n");
-    printf("#    -> Seta para DIREITA   : Move a peça para a direita   #\n");
-    printf("#    -> Seta para BAIXO     : Acelera a descida da peça    #\n");
+    printf("#    a Seta para ESQUERDA  : Move a peça para a esquerda   #\n");
+    printf("#    d Seta para DIREITA   : Move a peça para a direita    #\n");
+    printf("#    s Seta para BAIXO     : Acelera a descida da peça     #\n");
     printf("#    -> Tecla ESPAÇO        : Gira a peça                  #\n");
     printf("#                                                          #\n");
     printf("#  Objetivo:                                               #\n");
