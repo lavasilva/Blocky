@@ -1,5 +1,3 @@
-/*  gcc ./src/*.c -I./include -o tetris */
-
 #include "screen.h"
 #include "timer.h"
 #include "keyboard.h"
@@ -56,11 +54,6 @@ char tetrominos[7][4][4][4] = {
     }
 };
 
-// Variáveis de pontuação e nível
-int score = 0;
-int level = 1;
-int linesCleared = 0;
-
 // Estado do tabuleiro
 int board[WIDTH][HEIGHT];
 
@@ -73,113 +66,45 @@ typedef struct {
 
 Piece currentPiece;
 
-void exibirTelaInicial() {
-    system("clear"); // Limpa o terminal (ajuste para "cls" se estiver no Windows)
-    
-    // Exibe o título em ASCII art
-    printf("########################### #################################\n");
-    printf("████████╗███████╗████████╗██████╗░██╗░███████╗\n ");
-    printf("╚══██╔══╝██╔════╝╚══██╔══╝██╔══██╗██║██╔════╝\n ");
-    printf("░░░██║░░░█████╗░░░░░██║░░░██████╔╝██║╚█████╗░\n ");
-    printf("░░░██║░░░██╔══╝░░░░░██║░░░██╔══██╗██║░╚═══██╗\n ");
-    printf("░░░██║░░░███████╗░░░██║░░░██║░░██║░░██║██║██║█████╔╝\n ");
-    printf("░░░╚═╝░░░╚══════╝░░░╚═╝░░░╚═╝░░╚═╝╚═ ════╝░\n ");
-    printf("######################################## #############\n");
-    printf("\nPrepare-se para uma partida emocionante de TETRIS!\n");
-    printf("Pressione ENTER...\n");
-
-    // Aguarde o usuário iniciar
-    getchar();
-}
-
-void exibirInstrucoes() {
-    system("clear"); // Limpa o terminal para as instruções
-    printf("############################################################\n");
-    printf("#                                                          #\n");
-    printf("#                   INSTRUÇÕES DO TETRIS                   #\n");
-    printf("#                                                          #\n");
-    printf("############################################################\n");
-    printf("#                                                          #\n");
-    printf("#  Como jogar:                                             #\n");
-    printf("#  - Use as teclas para controlar as peças:                #\n");
-    printf("#    -> Tecla 'A' : Move a peça para a esquerda            #\n");
-    printf("#    -> Tecla 'D' : Move a peça para a direita             #\n");
-    printf("#    -> Tecla 'W' : Gira a peça                            #\n");
-    printf("#    -> Tecla 'S' : Acelera a descida da peça              #\n");
-    printf("#                                                          #\n");
-    printf("#  Objetivo:                                               #\n");
-    printf("#  - Complete linhas horizontais para ganhar pontos e      #\n");
-    printf("#    limpar as linhas.                                     #\n");
-    printf("#  - O jogo acaba se as peças chegarem ao topo.            #\n");
-    printf("#                                                          #\n");
-    printf("#  Pressione ENTER para começar o jogo!                    #\n");
-    printf("#                                                          #\n");
-    printf("############################################################\n");
-    getchar(); // Espera o usuário pressionar ENTER para continuar
-}
-
-
-    while (1) {
-        if (keyhit()) {
-            int key = readch();
-            if (key == '\n') {
-                break;
-            }
-        }
-    }
-}
-
 void drawBoard() {
     screenClear();
     screenSetColor(CYAN, BLACK);
     for (int i = 0; i < WIDTH; i++) {
         for (int j = 0; j < HEIGHT; j++) {
             if (board[i][j]) {
-                screenGotoxy(i * BLOCK_SIZE, j * BLOCK_SIZE);
+                screenGotoxy(SCRSTARTX + i * BLOCK_SIZE, SCRSTARTY + j);
                 printf("[]");
             }
         }
     }
-    screenUpdate();
 }
 
-void drawPiece(Piece* p) {
+void drawPiece(Piece *p) {
     screenSetColor(RED, BLACK);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
             if (tetrominos[p->type][p->rotation][i][j]) {
-                screenGotoxy((p->x + i) * BLOCK_SIZE, (p->y + j) * BLOCK_SIZE);
+                screenGotoxy(SCRSTARTX + (p->x + i) * BLOCK_SIZE, SCRSTARTY + p->y + j);
                 printf("[]");
             }
         }
     }
-    screenUpdate();
 }
 
-void drawScore() {
-    screenGotoxy(WIDTH * BLOCK_SIZE + 2, 5);
-    printf("PONTUACAO: %d", score);
-    screenGotoxy(WIDTH * BLOCK_SIZE + 2, 6);
-    printf("NIVEL: %d", level);
-    screenUpdate();
-}
-
-int checkCollision(Piece* p) {
+int checkCollision(Piece *p) {
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
             if (tetrominos[p->type][p->rotation][i][j]) {
                 int x = p->x + i;
                 int y = p->y + j;
-                if (x < 0 || x >= WIDTH || y < 0 || y >= HEIGHT || board[x][y]) {
-                    return 1;
-                }
+                if (x < 0 || x >= WIDTH || y >= HEIGHT || board[x][y]) return 1;
             }
         }
     }
     return 0;
 }
 
-void placePiece(Piece* p) {
+void placePiece(Piece *p) {
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
             if (tetrominos[p->type][p->rotation][i][j]) {
@@ -190,7 +115,6 @@ void placePiece(Piece* p) {
 }
 
 void removeFullLines() {
-    int linesRemoved = 0;
     for (int j = 0; j < HEIGHT; j++) {
         int full = 1;
         for (int i = 0; i < WIDTH; i++) {
@@ -208,15 +132,6 @@ void removeFullLines() {
             for (int i = 0; i < WIDTH; i++) {
                 board[i][0] = 0;
             }
-            linesRemoved++;
-        }
-    }
-    if (linesRemoved > 0) {
-        linesCleared += linesRemoved;
-        score += linesRemoved * 100;
-        if (linesCleared >= 5) {
-            level++;
-            linesCleared = 0;
         }
     }
 }
@@ -270,13 +185,7 @@ int main() {
     srand(time(NULL));
     screenInit(1);
     keyboardInit();
-    timerInit(500); // velocidade inicial do jogo
-
-    // Tela inicial
-    exibirTelaInicial();
-
-    // Instruções
-    exibirInstrucoes();
+    timerInit(500);
 
     spawnPiece();
 
@@ -287,7 +196,6 @@ int main() {
         }
         drawBoard();
         drawPiece(&currentPiece);
-        drawScore();
         screenUpdate();
     }
 
