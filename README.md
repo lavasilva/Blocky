@@ -48,7 +48,7 @@
    `gcc ./src/*.c -I./include -o jogar`
 
 4. Rode o programa:
-   `gcc ./src/*.c -I./include -o jogar`
+   `./jogar`
 
 5. Divirta-se!
 
