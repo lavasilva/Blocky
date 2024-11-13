@@ -1,34 +1,60 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h> // Para a função sleep() em Unix /Linux
-#include "screen.h" // Inclui os cabeçalhos em vez dos arquivos .c
+#include "screen.h"
 #include "timer.h"
 #include "keyboard.h"
+#include <stdlib.h>
+#include <time.h>
 
-// Definindo o tamanho do tabuleiro
-#define LINHAS 20
-#define COLUNAS 10
+#define WIDTH 10
+#define HEIGHT 20
+#define BLOCK_SIZE 2
 
-// Definindo os sete tipos de peças (tetrominos)
-int tetrominos[7][4][4] = {
-    {{1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}, // I
-    {{1, 1, 1, 0}, {0, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}, // T
-    {{1, 1, 0, 0}, {1, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}, // O
-    {{1, 1, 0, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}, // S
-    {{0, 1, 1, 0}, {1, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}, // Z
-    {{1, 0, 0, 0}, {1, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}, // J
-    {{0, 0, 1, 0}, {1, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}  // L
+// Definição das formas das peças com rotações possíveis
+char tetrominos[7][4][4][4] = {
+    { // I
+        { {1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
+        { {0, 1, 0, 0}, {0, 1, 0, 0}, {0, 1, 0, 0}, {0, 1, 0, 0} },
+        { {1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
+        { {0, 1, 0, 0}, {0, 1, 0, 0}, {0, 1, 0, 0}, {0, 1, 0, 0} }
+    },
+    { // O
+        { {1, 1, 0, 0}, {1, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
+        { {1, 1, 0, 0}, {1, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
+        { {1, 1, 0, 0}, {1, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
+        { {1, 1, 0, 0}, {1, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }
+    },
+    { // T
+        { {1, 1, 1, 0}, {0, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
+        { {0, 1, 0, 0}, {1, 1, 0, 0}, {0, 1, 0, 0}, {0, 0, 0, 0} },
+        { {0, 1, 0, 0}, {1, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
+        { {0, 1, 0, 0}, {0, 1, 1, 0}, {0, 1, 0, 0}, {0, 0, 0, 0} }
+    },
+    { // S
+        { {0, 1, 1, 0}, {1, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
+        { {1, 0, 0, 0}, {1, 1, 0, 0}, {0, 1, 0, 0}, {0, 0, 0, 0} },
+        { {0, 1, 1, 0}, {1, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
+        { {1, 0, 0, 0}, {1, 1, 0, 0}, {0, 1, 0, 0}, {0, 0, 0, 0} }
+    },
+    { // Z
+        { {1, 1, 0, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
+        { {0, 1, 0, 0}, {1, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 0, 0} },
+        { {1, 1, 0, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
+        { {0, 1, 0, 0}, {1, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 0, 0} }
+    },
+    { // L
+        { {1, 1, 1, 0}, {1, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
+        { {1, 1, 0, 0}, {0, 1, 0, 0}, {0, 1, 0, 0}, {0, 0, 0, 0} },
+        { {0, 0, 1, 0}, {1, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
+        { {0, 1, 0, 0}, {0, 1, 0, 0}, {1, 1, 0, 0}, {0, 0, 0, 0} }
+    },
+    { // J
+        { {1, 1, 1, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
+        { {0, 1, 0, 0}, {0, 1, 0, 0}, {1, 1, 0, 0}, {0, 0, 0, 0} },
+        { {1, 0, 0, 0}, {1, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
+        { {1, 1, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {0, 0, 0, 0} }
+    }
 };
 
-int tabuleiro[LINHAS][COLUNAS] = {0};  // Inicializa o tabuleiro com 0s
 
-// Variáveis da peça atual e posição
-struct Peca peçaAtual;  
-int x, y;  // Posição da peça
-
-// (Demais funções permanecem as mesmas)
-
-// Função para exibir a tela inicial
 void exibirTelaInicial() {
     system("clear"); // Limpa o terminal (ajuste para "cls" se estiver no Windows)
     
@@ -74,121 +100,154 @@ void exibirInstrucoes() {
     printf("############################################################\n");
     getchar(); // Espera o usuário pressionar ENTER para continuar
 }
+// Estado do tabuleiro
+int board[WIDTH][HEIGHT];
 
-// Função para inicializar a peça
-void inicializarPeça() {
-    int tipo = rand() % 7;  // Escolhe um tipo de peça aleatoriamente
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            peçaAtual.forma[i][j] = tetrominos[tipo][i][j];
+// Estrutura para representar uma peça
+typedef struct {
+    int x, y;
+    int type;
+    int rotation;
+} Piece;
+
+Piece currentPiece;
+
+void drawBoard() {
+    screenClear();
+    screenSetColor(CYAN, BLACK);
+    for (int i = 0; i < WIDTH; i++) {
+        for (int j = 0; j < HEIGHT; j++) {
+            if (board[i][j]) {
+                screenGotoxy(SCRSTARTX + i * BLOCK_SIZE, SCRSTARTY + j);
+                printf("[]");
+            }
         }
     }
-    x = COLUNAS / 2 - 2;  // Posição inicial no centro do tabuleiro
-    y = 0;  // Iniciar no topo
 }
 
-// Função para verificar colisões
-int verificarColisao() {
+void drawPiece(Piece *p) {
+    screenSetColor(RED, BLACK);
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            if (peçaAtual.forma[i][j]) {
-                if (y + i >= LINHAS || x + j < 0 || x + j >= COLUNAS || tabuleiro[y + i][x + j]) {
-                    return 1;  // Colidiu com algo
+            if (tetrominos[p->type][p->rotation][i][j]) {
+                screenGotoxy(SCRSTARTX + (p->x + i) * BLOCK_SIZE, SCRSTARTY + p->y + j);
+                printf("[]");
+            }
+        }
+    }
+}
+
+int checkCollision(Piece *p) {
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            if (tetrominos[p->type][p->rotation][i][j]) {
+                int x = p->x + i;
+                int y = p->y + j;
+                if (x < 0 || x >= WIDTH || y >= HEIGHT || board[x][y]) return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+void placePiece(Piece *p) {
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            if (tetrominos[p->type][p->rotation][i][j]) {
+                board[p->x + i][p->y + j] = 1;
+            }
+        }
+    }
+}
+
+void removeFullLines() {
+    for (int j = 0; j < HEIGHT; j++) {
+        int full = 1;
+        for (int i = 0; i < WIDTH; i++) {
+            if (!board[i][j]) {
+                full = 0;
+                break;
+            }
+        }
+        if (full) {
+            for (int k = j; k > 0; k--) {
+                for (int i = 0; i < WIDTH; i++) {
+                    board[i][k] = board[i][k - 1];
                 }
             }
-        }
-    }
-    return 0;  // Não colidiu
-}
-
-// Função para rotacionar a peça
-void rotacionarPeça() {
-    int temp[4][4];
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            temp[i][j] = peçaAtual.forma[3 - j][i];  // Rotaciona a peça 90 graus
-        }
-    }
-
-    // Verificar se a rotação é válida
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            if (temp[i][j] && (y + i >= LINHAS || x + j < 0 || x + j >= COLUNAS || tabuleiro[y + i][x + j])) {
-                return;  // Não pode rotacionar
+            for (int i = 0; i < WIDTH; i++) {
+                board[i][0] = 0;
             }
         }
     }
+}
 
-    // Se a rotação é válida, atualizar a peça
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            peçaAtual.forma[i][j] = temp[i][j];
+void spawnPiece() {
+    currentPiece.x = WIDTH / 2 - 2;
+    currentPiece.y = 0;
+    currentPiece.type = rand() % 7;
+    currentPiece.rotation = 0;
+    if (checkCollision(&currentPiece)) {
+        screenDestroy();
+        printf("Game Over\n");
+        exit(0);
+    }
+}
+
+void rotatePiece() {
+    int oldRotation = currentPiece.rotation;
+    currentPiece.rotation = (currentPiece.rotation + 1) % 4;
+    if (checkCollision(&currentPiece)) currentPiece.rotation = oldRotation;
+}
+
+void movePiece(int dx) {
+    currentPiece.x += dx;
+    if (checkCollision(&currentPiece)) currentPiece.x -= dx;
+}
+
+void dropPiece() {
+    currentPiece.y++;
+    if (checkCollision(&currentPiece)) {
+        currentPiece.y--;
+        placePiece(&currentPiece);
+        removeFullLines();
+        spawnPiece();
+    }
+}
+
+void processInput() {
+    if (keyhit()) {
+        int key = readch();
+        switch (key) {
+            case 'a': movePiece(-1); break;
+            case 'd': movePiece(1); break;
+            case 's': dropPiece(); break;
+            case 'w': rotatePiece(); break;
         }
     }
 }
 
-// Função para mover a peça para a esquerda
-void moverEsquerda() {
-    x--;
-    if (verificarColisao()) {
-        x++;  // Reverter o movimento
-    }
-}
-
-// Função para mover a peça para a direita
-void moverDireita() {
-    x++;
-    if (verificarColisao()) {
-        x--;  // Reverter o movimento
-    }
-}
-
-// Função para mover a peça para baixo
-void moverAbaixo() {
-    y++;
-    if (verificarColisao()) {
-        y--;  // Reverter o movimento
-        // Adicionar a peça no tabuleiro e gerar uma nova peça
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                if (peçaAtual.forma[i][j]) {
-                    tabuleiro[y + i][x + j] = 1;  // Preencher o tabuleiro
-                }
-            }
-        }
-        inicializarPeça();  // Gerar nova peça
-    }
-}
-
-// Função para atualizar a tela com o estado atual do jogo
-void atualizarTela() {
-    system("clear"); // Limpa o terminal
-    for (int i = 0; i < LINHAS; i++) {
-        for (int j = 0; j < COLUNAS; j++) {
-            if (tabuleiro[i][j]) {
-                printf("X ");  // Peça fixa no tabuleiro
-            } else if (i >= y && i < y + 4 && j >= x && j < x + 4 && peçaAtual.forma[i - y][j - x]) {
-                printf("O ");  // Peça atual
-            } else {
-                printf(". ");  // Espaço vazio
-            }
-        }
-        printf("\n");
-    }
-}
-
-// Função principal do jogo
 int main() {
     exibirTelaInicial();
     exibirInstrucoes();
+    srand(time(NULL));
+    screenInit(1);
+    keyboardInit();
+    timerInit(500);
 
-    inicializarPeça();
+    spawnPiece();
 
     while (1) {
-        atualizarTela();
-        usleep(500 * 1000);  // Espera 500 ms entre atualizações
-        moverAbaixo();
+        processInput();
+        if (timerTimeOver()) {
+            dropPiece();
+        }
+        drawBoard();
+        drawPiece(&currentPiece);
+        screenUpdate();
     }
 
+    screenDestroy();
+    keyboardDestroy();
     return 0;
 }
