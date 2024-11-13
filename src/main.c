@@ -109,16 +109,6 @@ void exibirInstrucoes() {
     getchar();
 }
 
-void screenInit(int desenharBordas) {
-    screenClear();
-    if (desenharBordas) {
-        screenDrawBorders();  // Desenha a borda
-    }
-    screenHomeCursor();
-    screenHideCursor();
-}
-
-
 // Função que verifica se a peça colidiu
 int checkCollision(Piece *piece) {
     for (int i = 0; i < 4; i++) {
@@ -257,10 +247,12 @@ int main() {
     exibirTelaInicial();
     exibirInstrucoes();
     srand(time(NULL));
-    screenInit(1); // Chama screenInit passando 1 para desenhar a borda
+    screenInit(1);
     keyboardInit();
     timerInit(500);
+
     spawnPiece();
+
     while (1) {
         processInput();
         if (timerTimeOver()) {
@@ -270,7 +262,8 @@ int main() {
         drawPiece(&currentPiece);
         screenUpdate();
     }
+
     screenDestroy();
     keyboardDestroy();
-    return 0;
+    return 0;
 }
