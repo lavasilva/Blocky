@@ -108,98 +108,86 @@ void placePiece(Piece *p) {
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
             if (tetrominos[p->type][p->rotation][i][j]) {
-                board[p->x + i][p->y + j] = 1;
+                int x = p->x + i;
+                int y = p->y + j;
+                if (y < HEIGHT) board[x][y] = 1;
             }
         }
     }
 }
 
-void removeFullLines() {
-    for (int j = 0; j < HEIGHT; j++) {
-        int full = 1;
-        for (int i = 0; i < WIDTH; i++) {
-            if (!board[i][j]) {
-                full = 0;
-                break;
-            }
-        }
-        if (full) {
-            for (int k = j; k > 0; k--) {
-                for (int i = 0; i < WIDTH; i++) {
-                    board[i][k] = board[i][k - 1];
-                }
-            }
-            for (int i = 0; i < WIDTH; i++) {
-                board[i][0] = 0;
-            }
-        }
+void rotatePiece(Piece *p) {
+    int prevRotation = p->rotation;
+    p->rotation = (p->rotation + 1) % 4;
+    if (checkCollision(p)) {
+        p->rotation = prevRotation;
     }
 }
 
-void spawnPiece() {
-    currentPiece.x = WIDTH / 2 - 2;
-    currentPiece.y = 0;
-    currentPiece.type = rand() % 7;
-    currentPiece.rotation = 0;
-    if (checkCollision(&currentPiece)) {
-        screenDestroy();
-        printf("Game Over\n");
-        exit(0);
+void moveLeft(Piece *p) {
+    p->x--;
+    if (checkCollision(p)) p->x++;
+}
+
+void moveRight(Piece *p) {
+    p->x++;
+    if (checkCollision(p)) p->x--;
+}
+
+void moveDown(Piece *p) {
+    p->y++;
+    if (checkCollision(p)) {
+        p->y--;
+        placePiece(p);
+        // Geração da próxima peça
+        currentPiece.x = WIDTH / 2 - 2;
+        currentPiece.y = 0;
+        currentPiece.type = rand() % 7;
+        currentPiece.rotation = 0;
     }
 }
 
-void rotatePiece() {
-    int oldRotation = currentPiece.rotation;
-    currentPiece.rotation = (currentPiece.rotation + 1) % 4;
-    if (checkCollision(&currentPiece)) currentPiece.rotation = oldRotation;
-}
-
-void movePiece(int dx) {
-    currentPiece.x += dx;
-    if (checkCollision(&currentPiece)) currentPiece.x -= dx;
-}
-
-void dropPiece() {
-    currentPiece.y++;
-    if (checkCollision(&currentPiece)) {
-        currentPiece.y--;
-        placePiece(&currentPiece);
-        removeFullLines();
-        spawnPiece();
+void screenDrawBorders() {
+    screenSetColor(WHITE, BLACK);
+    for (int i = 0; i < WIDTH + 2; i++) {
+        screenGotoxy(SCRSTARTX + i * BLOCK_SIZE, SCRSTARTY - 1);
+        printf("[]");
+        screenGotoxy(SCRSTARTX + i * BLOCK_SIZE, SCRSTARTY + HEIGHT);
+        printf("[]");
     }
-}
-
-void processInput() {
-    if (keyhit()) {
-        int key = readch();
-        switch (key) {
-            case 'a': movePiece(-1); break;
-            case 'd': movePiece(1); break;
-            case 's': dropPiece(); break;
-            case 'w': rotatePiece(); break;
-        }
+    for (int i = 0; i < HEIGHT + 2; i++) {
+        screenGotoxy(SCRSTARTX - 1, SCRSTARTY + i);
+        printf("[]");
+        screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE, SCRSTARTY + i);
+        printf("[]");
     }
 }
 
 int main() {
     srand(time(NULL));
-    screenInit(1);
-    keyboardInit();
-    timerInit(500);
+    screenInit();
 
-    spawnPiece();
+    currentPiece.x = WIDTH / 2 - 2;
+    currentPiece.y = 0;
+    currentPiece.type = rand() % 7;
+    currentPiece.rotation = 0;
 
     while (1) {
-        processInput();
-        if (timerTimeOver()) {
-            dropPiece();
-        }
         drawBoard();
         drawPiece(&currentPiece);
-        screenUpdate();
+        screenDrawBorders();
+
+        if (keyPressed()) {
+            char key = getKey();
+            if (key == 'a') moveLeft(&currentPiece);
+            if (key == 'd') moveRight(&currentPiece);
+            if (key == 's') moveDown(&currentPiece);
+            if (key == 'w') rotatePiece(&currentPiece);
+        }
+
+        screenFlush();
+        usleep(100000); // Delay
     }
 
-    screenDestroy();
-    keyboardDestroy();
     return 0;
 }
