@@ -1,3 +1,5 @@
+/* gcc ./src/*.c -I./include -o tetris */
+
 #include "screen.h"
 #include "timer.h"
 #include "keyboard.h"
@@ -88,7 +90,6 @@ void exibirInstrucoes() {
     printf("#    a Seta para ESQUERDA  : Move a peça para a esquerda   #\n");
     printf("#    d Seta para DIREITA   : Move a peça para a direita    #\n");
     printf("#    s Seta para BAIXO     : Acelera a descida da peça     #\n");
-    printf("#    -> Tecla ESPAÇO        : Gira a peça                  #\n");
     printf("#                                                          #\n");
     printf("#  Objetivo:                                               #\n");
     printf("#  - Complete linhas horizontais para ganhar pontos e      #\n");
