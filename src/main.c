@@ -7,6 +7,10 @@
 #define WIDTH 10
 #define HEIGHT 20
 #define BLOCK_SIZE 2
+#define SCRSTARTX 5
+#define SCRSTARTY 5
+#define MAXX 80
+#define MAXY 25
 
 void screenDrawBorders();
 // Definição das formas das peças com rotações possíveis
@@ -91,230 +95,102 @@ void exibirTelaInicial() {
     screenGotoxy(start_x, 8);
     printf("░░░██║░░░██╔══╝░░░░░██║░░░██╔══██╗██║░╚═══██╗\n");
     screenGotoxy(start_x, 9);
-    printf("░░░██║░░░███████╗░░░██║░░░██║░░██║░░██║██║██║\n");
+    printf("░░░██║░░░███████╗░░░██║░░░██║░░██║██║██████╔╝\n");
     screenGotoxy(start_x, 10);
-    printf("░░░╚═╝░░░╚══════╝░░░╚═╝░░░╚═╝░░╚═╝╚═ ════╝░\n");
+    printf("░░░╚═╝░░░╚══════╝░░░╚═╝░░░╚═╝░░╚═╝╚═════╝░░\n");
 
-    // Exibe a mensagem de preparação centralizada
-    screenGotoxy((MAXX - 42) / 2, 12);
-    printf("Prepare-se para uma partida emocionante de TETRIS!\n");
-    screenGotoxy((MAXX - 20) / 2, 13);
-    printf("Pressione ENTER...\n");
-
-    // Aguarde o usuário iniciar
-    getchar();
+    // Define a cor do texto e aguarda o usuário pressionar uma tecla
+    screenSetColor(WHITE, BLACK);
+    printf("\nPressione qualquer tecla para começar...\n");
+    getchar();  // Aguarda uma tecla ser pressionada
+    system("clear");
 }
 
+void screenDrawBorders() {
+    screenSetColor(WHITE, BLACK);
 
-
-void exibirInstrucoes() {
-    system("clear"); // Limpa o terminal para as instruções
-    
-    // Desenha as bordas ao redor da área de instruções
-    screenDrawBorders();
-
-    // Centralizar o título das instruções
-    int instrucoes_comprimento = 60; // Comprimento médio das instruções
-    int start_x = (MAXX - instrucoes_comprimento) / 2;  // Recalcular a posição de início para centralizar
-
-    // Exibe o título das instruções com borda
-    screenGotoxy(start_x, 5);  // Posição de início para o título
-    screenGotoxy(start_x, 6);
-    printf("                                                          \n");
-    screenGotoxy(start_x, 7);
-    printf("                   INSTRUÇÕES DO TETRIS                   \n");
-    screenGotoxy(start_x, 8);
-    printf("                                                          \n");
-
-    // Exibe o conteúdo das instruções, centralizado
-    screenGotoxy(start_x, 9);
-    printf(" Use as setas para mover as peças:                        \n");
-    screenGotoxy(start_x, 10);
-    printf("  A: Mover para a Esquerda                                 \n");
-    screenGotoxy(start_x, 11);
-    printf("  D: Mover para a Direita                                  \n");
-    screenGotoxy(start_x, 12);
-    printf("  W: Girar a peça                                         \n");
-    screenGotoxy(start_x, 13);
-    printf("  S: Acelerar a queda da peça                             \n");
-    screenGotoxy(start_x, 14);
-    printf("                                                          \n");
-
-    // Exibe a mensagem dentro da borda
-    screenGotoxy(start_x, 15);
-    printf("                                                          \n");
-    screenGotoxy(start_x, 16);
-    printf("      Pressione ENTER para começar...                     \n");
-    screenGotoxy(start_x, 17);
-    printf("                                                          \n");
-
-    // Espera o usuário pressionar Enter para continuar
-    getchar();
-}
-
-
-
-
-// Função que verifica se a peça colidiu
-int checkCollision(Piece *piece) {
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            if (tetrominos[piece->type][piece->rotation][i][j]) {
-                int x = piece->x + i;
-                int y = piece->y + j;
-                if (x < 0 || x >= WIDTH || y >= HEIGHT || board[x][y]) {
-                    return 1;  // Colidiu com a borda ou outra peça
-                }
-            }
-        }
+    // Desenha a borda superior
+    for (int i = 0; i < WIDTH + 2; i++) {
+        screenGotoxy(SCRSTARTX + i * BLOCK_SIZE, SCRSTARTY - 1);
+        printf("[]");
     }
-    return 0;  // Não houve colisão
-}
 
-// Função que coloca a peça no tabuleiro
-void placePiece(Piece *piece) {
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            if (tetrominos[piece->type][piece->rotation][i][j]) {
-                board[piece->x + i][piece->y + j] = 1;  // Marca o tabuleiro com a peça
-            }
-        }
+    // Desenha a borda inferior
+    for (int i = 0; i < WIDTH + 2; i++) {
+        screenGotoxy(SCRSTARTX + i * BLOCK_SIZE, SCRSTARTY + HEIGHT);
+        printf("[]");
+    }
+
+    // Desenha as bordas laterais
+    for (int j = 0; j < HEIGHT; j++) {
+        screenGotoxy(SCRSTARTX - 1, SCRSTARTY + j);
+        printf("[]");
+        screenGotoxy(SCRSTARTX + (WIDTH + 1) * BLOCK_SIZE, SCRSTARTY + j);
+        printf("[]");
     }
 }
-
-// Função que rotaciona a peça
-void rotatePiece() {
-    int oldRotation = currentPiece.rotation;
-    currentPiece.rotation = (currentPiece.rotation + 1) % 4;  // Rotaciona para a próxima posição
-    if (checkCollision(&currentPiece)) {
-        currentPiece.rotation = oldRotation;  // Se houver colisão, volta para a rotação anterior
-    }
-}
-
-// Função que move a peça na horizontal
-void movePiece(int dx) {
-    currentPiece.x += dx;  // Desloca a peça para a esquerda (dx=-1) ou para a direita (dx=1)
-    if (checkCollision(&currentPiece)) {
-        currentPiece.x -= dx;  // Se houver colisão, desfaz o movimento
-    }
-}
-
-// Função que desenha a peça na tela
-void drawPiece(Piece *piece) {
-    screenSetColor(RED, BLACK);  // Define a cor para desenhar a peça
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            if (tetrominos[piece->type][piece->rotation][i][j]) {  // Verifica se a célula da peça está ativa
-                screenGotoxy(SCRSTARTX + (piece->x + i) * BLOCK_SIZE, SCRSTARTY + piece->y + j);  // Calcula a posição na tela
-                printf("[]");  // Desenha o bloco da peça
-            }
-        }
-    }
-}
-
 
 void drawBoard() {
-    screenClear();  // Limpa a tela
-    screenSetColor(CYAN, BLACK);  // Define a cor para o tabuleiro
+    screenClear();
+    screenSetColor(CYAN, BLACK);
 
     // Desenha o tabuleiro dentro da borda
     for (int i = 0; i < WIDTH; i++) {
         for (int j = 0; j < HEIGHT; j++) {
             if (board[i][j]) {
                 // Ajusta a posição das peças dentro da área do tabuleiro
-                screenGotoxy(SCRSTARTX + (i + 1) * BLOCK_SIZE, SCRSTARTY + (j + 1));  // Ajusta o X e Y
+                screenGotoxy(SCRSTARTX + (i + 1) * BLOCK_SIZE, SCRSTARTY + (j + 1));  
                 printf("[]");
             }
         }
     }
-    
-    // Exibe o nível e a pontuação dentro da área do tabuleiro
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 2, SCRSTARTY + 1);
+
+    // Exibe o nível e a pontuação
+    screenGotoxy(SCRSTARTX + (WIDTH + 1) * BLOCK_SIZE + 2, SCRSTARTY + 1);
     printf("Nível: %d", level);
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 2, SCRSTARTY + 2);
+    screenGotoxy(SCRSTARTX + (WIDTH + 1) * BLOCK_SIZE + 2, SCRSTARTY + 2);
     printf("Pontuação: %d", score);
 }
 
-
-void removeFullLines() {
-    // Função que remove linhas completas
-    for (int j = 0; j < HEIGHT; j++) {
-        int full = 1;
-        for (int i = 0; i < WIDTH; i++) {
-            if (!board[i][j]) {
-                full = 0;
-                break;
+void drawPiece(Piece *piece) {
+    screenSetColor(RED, BLACK);
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            if (tetrominos[piece->type][piece->rotation][i][j]) {  // Verifica se a célula da peça está ativa
+                screenGotoxy(SCRSTARTX + (piece->x + i + 1) * BLOCK_SIZE, SCRSTARTY + piece->y + j + 1);  
+                printf("[]");
             }
-        }
-        if (full) {
-            for (int k = j; k > 0; k--) {
-                for (int i = 0; i < WIDTH; i++) {
-                    board[i][k] = board[i][k - 1];
-                }
-            }
-            for (int i = 0; i < WIDTH; i++) {
-                board[i][0] = 0;
-            }
-            score += 100; // Adiciona 100 pontos por linha completa
-        }
-    }
-}
-
-void spawnPiece() {
-    currentPiece.x = WIDTH / 2 - 2;
-    currentPiece.y = 0;
-    currentPiece.type = rand() % 7;
-    currentPiece.rotation = 0;
-    if (checkCollision(&currentPiece)) {
-        screenDestroy();
-        printf("Game Over\n");
-        exit(0);
-    }
-}
-
-void dropPiece() {
-    currentPiece.y++;
-    if (checkCollision(&currentPiece)) {
-        currentPiece.y--;
-        placePiece(&currentPiece);
-        removeFullLines();
-        spawnPiece();
-    }
-}
-
-void processInput() {
-    if (keyhit()) {
-        int key = readch();
-        switch (key) {
-            case 'a': movePiece(-1); break;
-            case 'd': movePiece(1); break;
-            case 's': dropPiece(); break;
-            case 'w': rotatePiece(); break;
         }
     }
 }
 
 int main() {
-    exibirTelaInicial();
-    exibirInstrucoes();
-    srand(time(NULL));
-    screenInit(1);
-    keyboardInit();
-    timerInit(500);
+    exibirTelaInicial();  // Exibe a tela inicial com bordas e título
+    srand(time(NULL));    // Semente para geração aleatória
+    screenInit(1);        // Inicializa a tela
+    keyboardInit();       // Inicializa o teclado
+    timerInit(500);       // Inicializa o timer com intervalo de 500 ms
 
-    spawnPiece();
+    spawnPiece();         // Gera uma peça inicial
 
     while (1) {
-        processInput();
-        if (timerTimeOver()) {
+        processInput();    // Processa a entrada do usuário (movimentação das peças)
+
+        if (timerTimeOver()) {  // Se o tempo do timer acabou, a peça cai
             dropPiece();
         }
-        drawBoard();
-        drawPiece(&currentPiece);
-        screenUpdate();
+
+        drawBoard();        // Desenha o tabuleiro
+        drawPiece(&currentPiece); // Desenha a peça atual
+        screenUpdate();     // Atualiza a tela (com todos os desenhos)
+
+        // Verifica se o jogo terminou (por exemplo, se uma peça colidiu com outra ou com o topo)
+        if (isGameOver()) {
+            break;  // Encerra o loop do jogo caso o jogo tenha terminado
+        }
     }
 
-    screenDestroy();
-    keyboardDestroy();
+    screenDestroy();      // Destrói a tela (libera recursos)
+    keyboardDestroy();    // Destrói os recursos do teclado
     return 0;
 }
