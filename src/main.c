@@ -260,8 +260,10 @@ void removeFullLines() {
     }
 }
 
+
+
 void spawnPiece() {
-    currentPiece.x = WIDTH / 2 - 2;
+    currentPiece.x = WIDTH / 2 - 1;
     currentPiece.y = 0;
     currentPiece.type = rand() % 7;
     currentPiece.rotation = 0;
@@ -301,6 +303,7 @@ int main() {
     screenInit(1);
     keyboardInit();
     timerInit(500);
+
 
     spawnPiece();
 
