@@ -45,10 +45,10 @@
    `git clone https://github.com/lavasilva/Tetris.git`
 
 3. Compile o programa:
-   `gcc ./src/*.c -I./include -o jogar`
+   `gcc ./src/*.c -I./include -o exemplo`
 
 4. Rode o programa:
-   `./jogar`
+   `./exemplo`
 
 5. Divirta-se!
 
