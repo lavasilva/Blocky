@@ -263,7 +263,7 @@ void removeFullLines() {
 
 
 void spawnPiece() {
-    currentPiece.x = WIDTH / 2 - 1;
+    currentPiece.x = WIDTH / 2 -2;
     currentPiece.y = 0;
     currentPiece.type = rand() % 7;
     currentPiece.rotation = 0;
