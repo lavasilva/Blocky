@@ -29,6 +29,11 @@ void exibirMenu();
 void spawnPiece();
 void dropPiece();
 void processInput();
+//add ModoInvertido() e modoClassico aqui dps (org ordem)
+
+int level = 1; 
+int score = 0;
+int currentMode = 1;
 
 void screenDrawBorders();
 // Definição das formas das peças com todas as rotações possíveis
@@ -75,10 +80,7 @@ char tetrominos[7][4][4][4] = {
         { {1, 0, 0, 0}, {1, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
         { {1, 1, 0, 0}, {1, 0, 0, 0}, {1, 0, 0, 0}, {0, 0, 0, 0} }
     }
-};
-
-int level = 1; 
-int score = 0;  
+};  
 
 // Estado do tabuleiro
 int board[WIDTH][HEIGHT];
@@ -134,39 +136,101 @@ void exibirTelaInicial() {
     screenGotoxy((MAXX - 42) / 2, 16);
     printf("Pressione ENTER para começar...\n");
 
-    // Aguardando usuário iniciar...
+    // Aguardando usuário ...
     getchar();
 }
 
+int escolherModo() {
+    int modo;
+    char input[10];
 
-void exibirInstrucoes() {
-    system("clear"); 
-    
+    do {
+        system("clear"); 
+        
+        screenGotoxy((MAXX - 128) / 2, 5);  
+        printf("      __  __ ___ _  _ _   _   ___ ___ ___ _  _  ___ ___ ___  _   _    \n");
+        screenGotoxy((MAXX - 128) / 2, 6);
+        printf("     |  \\/  | __| \\| | | | | | _ \\ _ \\_ _| \\| |/ __|_ _| _ \\/_\\ | |   \n");
+        screenGotoxy((MAXX - 128) / 2, 7);
+        printf("     | |\\/| | _|| .` | |_| | |  _/   /| || .` | (__ | ||  _/ _ \\| |__ \n");
+        screenGotoxy((MAXX - 128) / 2, 8);
+        printf("     |_|  |_|___|_|\\_|\\___/  |_| |_|_\\___|_|\\_|\\___|___|_|/_/ \\_\\____|\n");
+
+        screenGotoxy((MAXX - 24) / 2, 12);
+        printf("1. Modo Clássico\n");
+
+        screenGotoxy((MAXX - 24) / 2, 14);
+        printf("2. Modo Desafio\n");
+
+        screenGotoxy((MAXX - 24) / 2, 16);
+        printf("Escolha uma opção: ");
+        fflush(stdout);
+
+        if (fgets(input, sizeof(input), stdin) != NULL) {
+            modo = atoi(input);  
+        } else {
+            modo = 0;
+        }
+
+        if (modo < 1 || modo > 2) {
+            printf("Opção inválida. Tente novamente.\n");
+            printf("Pressione ENTER para voltar para o menu...");
+            getchar();  
+        }
+
+    } while (modo < 1 || modo > 2);  // Continua até escolha válida
+
+    return modo; 
+}
+
+
+void exibirInstrucoes(int modo) {
+    system("clear");
+
     screenDrawBorders();
 
-    int instrucoes_comprimento = 60; 
+    int instrucoes_comprimento = 60;
     int start_x = (MAXX - instrucoes_comprimento) / 2;
 
     screenGotoxy(start_x, 5);  
     screenGotoxy(start_x, 6);
-    printf("                                                          \n");
-    screenGotoxy(start_x, 7);
-    printf("                   INSTRUÇÕES DO TETRIS                   \n");
-    screenGotoxy(start_x, 8);
-    printf("                                                          \n");
+    printf("                                                              \n");
 
-    screenGotoxy(start_x, 9);
-    printf(" Use as setas para mover as peças:                        \n");
-    screenGotoxy(start_x, 10);
-    printf("  A: Mover para a Esquerda                                 \n");
-    screenGotoxy(start_x, 11);
-    printf("  D: Mover para a Direita                                  \n");
-    screenGotoxy(start_x, 12);
-    printf("  W: Girar a peça                                         \n");
-    screenGotoxy(start_x, 13);
-    printf("  S: Acelerar a queda da peça                             \n");
-    screenGotoxy(start_x, 14);
-    printf("                                                          \n");
+    screenGotoxy(start_x, 7);
+    printf("                                                              \n");
+    screenGotoxy(start_x, 8);
+    printf("                                                              \n");
+
+    if (modo == 1) {  // Modo Clássico
+        screenGotoxy(start_x, 9);
+        printf("                INSTRUÇÕES DO MODO CLÁSSICO               \n");
+
+        screenGotoxy(start_x, 12);
+        printf(" Use as setas para mover as peças:                         \n");
+        screenGotoxy(start_x, 13);
+        printf("  A: Mover para a Esquerda                                 \n");
+        screenGotoxy(start_x, 14);
+        printf("  D: Mover para a Direita                                  \n");
+        screenGotoxy(start_x, 15);
+        printf("  W: Girar a peça                                          \n");
+        screenGotoxy(start_x, 16);
+        printf("  S: Acelerar a queda da peça                              \n");
+
+    } else if (modo == 2) {  // Modo Desafio
+        screenGotoxy(start_x, 9);
+        printf("                INSTRUÇÕES DO MODO DESAFIO                \n");
+
+        screenGotoxy(start_x, 12);
+        printf(" Neste modo, os controles são invertidos!                 \n");
+        screenGotoxy(start_x, 13);
+        printf("  A: Mover para a Direita                                  \n");
+        screenGotoxy(start_x, 14);
+        printf("  D: Mover para a Esquerda                                 \n");
+        screenGotoxy(start_x, 15);
+        printf("  W: Girar a peça (sentido anti-horário)                   \n");
+        screenGotoxy(start_x, 16);
+        printf("  S: Acelera a queda da peça                               \n");
+    }
 
     screenGotoxy(start_x, 15);
     printf("                                                          \n");
@@ -212,6 +276,16 @@ void rotatePiece() {
     currentPiece.rotation = (currentPiece.rotation + 1) % 4;  // Rotaciona p/ próxima posição
     if (checkCollision(&currentPiece)) {
         currentPiece.rotation = oldRotation;  // Sem colisão, volta p/ rotação anterior
+    }
+}
+
+// Função que rotaciona a peça no sentido anti-horário 
+void rotatePieceContrario() {
+    int oldRotation = currentPiece.rotation;
+    currentPiece.rotation = (currentPiece.rotation + 3) % 4;  // Subtrair rotação (anti-horário)
+
+    if (checkCollision(&currentPiece)) {
+        currentPiece.rotation = oldRotation;  // Sem colisão, volta para rotação anterior
     }
 }
 
@@ -500,21 +574,50 @@ void dropPiece() {
     }
 }
 
+void dropPieceMaisRapido() {
+    currentPiece.y++; // 1a descida
+
+    if (!checkCollision(&currentPiece)) {  // Verificando colisão dps de 1 descida
+        currentPiece.y++;  // Sem colisão, 2x descida
+    }
+    
+    if (checkCollision(&currentPiece)) {  // Fez a segunda colisão verificar
+        currentPiece.y--;  // Colisão? Volta p/ posição anterior
+        placePiece(&currentPiece); 
+        removeFullLines();  
+        spawnPiece();  // Gerando +1 nova peça
+    }
+}
+
 void processInput() {
     if (keyhit()) {
         int key = readch();
-        switch (key) {
-            case 'a': movePiece(-1); break;
-            case 'd': movePiece(1); break;
-            case 's': dropPiece(); break;
-            case 'w': rotatePiece(); break;
+
+        if (currentMode == 1) {  // Modo Clássico
+            switch (key) {
+                case 'a': movePiece(-1); break; // A == esquerda
+                case 'd': movePiece(1); break; // D -- direita
+                case 's': dropPiece(); break;
+                case 'w': rotatePiece(); break;
+            }
+        } else if (currentMode == 2) {  // Modo Desafio
+            switch (key) {
+                case 'a': movePiece(1); break;  // A == direita 
+                case 'd': movePiece(-1); break; // D == esquerda 
+                case 's': dropPieceMaisRapido(); break; // desce 2x mais
+                case 'w': rotatePieceContrario(); break; // anti-horario
+            }
         }
     }
 }
 
 int main() {
     exibirTelaInicial();
-    exibirInstrucoes();
+    int modoSelecionado = escolherModo();
+    currentMode = modoSelecionado;
+
+    exibirInstrucoes(modoSelecionado);
+
     srand(time(NULL));
     screenInit(1);
     keyboardInit();
@@ -525,13 +628,13 @@ int main() {
     while (1) {
         processInput(); // Entradas do usuário -- movimentação e rotação da peça!
         
-        if (timerTimeOver()) { // Verificando se o tempo acabou
-            dropPiece(); // Faz a peça cair uma linha
+        if (timerTimeOver()) { // Verificando se o tempo acabou p/ descer a peça
+            dropPiece();
         }
 
-        drawBoard();              // Desenha o tabuleiro
-        drawPiece(&currentPiece); // Desenha a peça atual
-        screenUpdate();           // Atualiza a tela
+        drawBoard(); 
+        drawPiece(&currentPiece);
+        screenUpdate();         
     }
 
     screenDestroy(); // free()?
