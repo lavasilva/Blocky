@@ -25,7 +25,9 @@
   /></a>
 </p>
 
-## 🖥️  Tetris
+Bem-vindo ao Tetris Terminal Game, uma recriação do clássico jogo de Tetris para ser jogado diretamente no terminal! Este projeto foi desenvolvido em C e utiliza uma biblioteca em C [Acesse Aqui](https://github.com/tgfb/cli-lib/) para criar uma experiência divertida e nostálgica.
+
+## 🖥️  Blocky
 
 ## 📄 Descrição
 
