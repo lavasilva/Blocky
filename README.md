@@ -25,7 +25,7 @@
   /></a>
 </p>
 
-Bem-vindo ao Blocky, uma recriação do clássico jogo de Tetris para ser jogado diretamente no terminal! Este projeto foi desenvolvido em C e utiliza uma biblioteca em C [Acesse Aqui](https://github.com/tgfb/cli-lib/) para criar uma experiência divertida e nostálgica.
+Bem-vindo ao Blocky, uma recriação do clássico jogo de Tetris para ser jogado diretamente no terminal para criar uma experiência divertida e nostálgica! Este projeto foi desenvolvido em C e utiliza uma biblioteca [Acesse Aqui](https://github.com/tgfb/cli-lib/) 
 
 ## 🖥️  Blocky
 Blocky é uma adaptação do clássico jogo Tetris. Trata-se de um jogo de puzzle onde peças de diferentes formatos, chamadas "tetrominós", caem de cima para baixo em um campo de jogo. O objetivo é posicioná-las de maneira a formar linhas horizontais completas, que desaparecem, evitando que as peças se acumulem até o topo. O desafio está em pensar rápido e organizar as peças estrategicamente.
@@ -87,27 +87,6 @@ Desenho automático das bordas delimitando a área de jogo.
 - Pratique o controle de peças para melhorar sua habilidade em encaixar as peças de forma eficiente.
 - Use a rotação de peças para adaptar as formas às linhas disponíveis no tabuleiro.
 
-## 🛠️ Estrutura do Código
-Principais Arquivos e Funções
-**main.c:**
-Contém a lógica principal do jogo, incluindo movimentação, colisão, e renderização.
-
-**Lista e Descrição das Funções:**
-
-1. `screenDrawBorders` 
-   - Desenha as bordas do jogo na tela para delimitar o espaço onde as peças cairão.
-   - Utiliza `screenGotoxy` para posicionamento no terminal e elementos como `===` e `|||`.
-2. `exibirTelaInicial`  
-   - Exibe uma tela inicial com o título ASCII do jogo e solicita o nome do jogador.
-   - Mostra uma mensagem de boas-vindas e aguarda que o jogador pressione `ENTER`.
-3. `exibirInstrucoes`  
-   - Exibe as instruções do jogo, incluindo os controles para mover e girar as peças.
-   - Utiliza bordas e centralização para melhorar a apresentação.
-4. `checkCollision`
-   - Verifica colisões entre a peça atual e o tabuleiro ou as bordas.  
-   - Retorna 1 se houver colisão e 0 caso contrário.
-
-
 
 ## ♟️ Executando o Jogo
 **1. Configuração do Ambiente:**
@@ -140,6 +119,23 @@ Contém a lógica principal do jogo, incluindo movimentação, colisão, e rende
        ./exemplo
 
 Divirta-se!
+
+
+## 😅 Dificuldades Encontradas
+
+**Sincronização entre Frames :**
+- Ajusta o tempo de queda das peças para níveis progressivos que foram solicitados.
+**Colisões Rotacionais :**
+- Garantir que as peças não ultrapassem os limites durante rotações realizadas várias verificações.
+**Centralização de Conteúdo :**
+- Manter o título e mensagens centralizados, independentemente do tamanho da janela, exige cálculos precisos.
+ Gerenciamento de Tela 
+ - Garantir que as bordas e elementos da interface não pisquem ou sejam sobrescritos, especialmente em consoles de terminal com renderização lenta.
+**Rotação de Peças:**
+- Implementar a rotação das peças de forma consistente e sem colisões foi desafiador, especialmente para peças próximas às bordas.
+**Persistência do Ranking:**
+  - Manipular arquivos para salvar e carregar dados exigiu cuidados com formatação e ordenação para garantir a integridade do ranking.
+
 
 ## 👩‍💻 Membros & Perfis do GitHub
 
