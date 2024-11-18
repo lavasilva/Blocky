@@ -440,27 +440,25 @@ void exibirMenu(int score) {
         screenGotoxy((MAXX - 24) / 2, 12);
         printf("3. Sair\n");
 
-        // Centraliza o prompt para escolha
-        screenGotoxy((MAXX - 24) / 2, 14);  // Ajuste para centralizar "Escolha uma opção: "
+        screenGotoxy((MAXX - 24) / 2, 14);  
         printf("Escolha uma opção: ");
-        fflush(stdout);  // Garante que a mensagem seja exibida
+        fflush(stdout); // Garantindo que a msg seja exibida de imediato
 
-        // Lê a entrada como string
         if (fgets(input, sizeof(input), stdin) != NULL) {
-            opcao = atoi(input);  // Converte para inteiro
+            opcao = atoi(input);  // Lê str, converte para inteiro
         } else {
             opcao = 0;
         }
 
         switch (opcao) {
             case 1:
-                if (!pontuacaoSalva) {  // Verifica se a pontuação já foi salva
+                if (!pontuacaoSalva) {  
                     salvarPontuacaoNoRanking(score);
-                    pontuacaoSalva = 1;  // Marca que a pontuação foi salva
+                    pontuacaoSalva = 1;  // Marca flag -- pontuação salva
                 } else {
                     printf("A pontuação já foi salva!\n");
                     printf("Pressione ENTER para continuar...");
-                    getchar();  // Aguarda o usuário pressionar ENTER
+                    getchar();
                 }
                 break;
             case 2:
@@ -478,9 +476,6 @@ void exibirMenu(int score) {
 
     } while (opcao != 3);
 }
-
-
-
 
 void spawnPiece() {
     currentPiece.x = WIDTH / 2 - 2;
@@ -523,23 +518,23 @@ int main() {
     srand(time(NULL));
     screenInit(1);
     keyboardInit();
-    timerInit(500); // Inicializa o temporizador com intervalo de 500ms
+    timerInit(500); // Intervalo de 500ms
 
-    spawnPiece(); // Gera a primeira peça
+    spawnPiece(); // Gerando a primeira peça
 
     while (1) {
-        processInput(); // Processa as entradas do usuário (movimentação e rotação da peça)
+        processInput(); // Entradas do usuário -- movimentação e rotação da peça!
         
-        if (timerTimeOver()) { // Verifica se o tempo acabou
+        if (timerTimeOver()) { // Verificando se o tempo acabou
             dropPiece(); // Faz a peça cair uma linha
         }
 
-        drawBoard(); // Desenha o tabuleiro
+        drawBoard();              // Desenha o tabuleiro
         drawPiece(&currentPiece); // Desenha a peça atual
-        screenUpdate(); // Atualiza a tela
+        screenUpdate();           // Atualiza a tela
     }
 
-    screenDestroy(); // Libera os recursos da tela
-    keyboardDestroy(); // Finaliza a leitura do teclado
+    screenDestroy(); // free()?
+    keyboardDestroy(); 
     return 0;
 }
