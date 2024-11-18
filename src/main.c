@@ -9,7 +9,7 @@
 #define HEIGHT 20
 #define BLOCK_SIZE 2
 
-//Todas as nossas funções
+//Todas as nossas funções -- sempre add novas aqui pra facilitar!
 void screenDrawBorders();
 void exibirTelaInicial();
 void exibirInstrucoes();
@@ -31,7 +31,7 @@ void dropPiece();
 void processInput();
 
 void screenDrawBorders();
-// Definição das formas das peças com rotações possíveis
+// Definição das formas das peças com todas as rotações possíveis
 char tetrominos[7][4][4][4] = {
     { // I
         { {1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
@@ -77,13 +77,13 @@ char tetrominos[7][4][4][4] = {
     }
 };
 
-int level = 1;  // Nível do jogo
-int score = 0;  // Pontuação
+int level = 1; 
+int score = 0;  
 
 // Estado do tabuleiro
 int board[WIDTH][HEIGHT];
 
-// Estrutura para representar uma peça
+// Estrutura p/ representar uma peça
 typedef struct {
     int x, y;
     int type;
@@ -92,29 +92,24 @@ typedef struct {
 
 Piece currentPiece;
 
-
-// Estrutura para armazenar o ranking
+// Estrutura p/ armazenar o ranking
 typedef struct {
     char nome[50];
     int pontuacao;
 } Ranking;
 
-
-
 void exibirTelaInicial() {
-    system("clear"); // Limpa o terminal (ajuste para "cls" se estiver no Windows)
+    system("clear"); // Limpando o terminal -- checar se podemos mudar isso (ajuste pra 'pica-pisca' do terminal)
 
     // Chama a função para desenhar as bordas
     screenDrawBorders();
 
     // Centralizar o título ASCII
-    int titulo_linhas = 6;  // O título tem 6 linhas
-    int titulo_comprimento = 50;  // Comprimento médio do título (ajuste conforme necessário)
-    int start_x = (MAXX - titulo_comprimento) / 2;  // Calcula a posição de início para centralizar
+    int titulo_linhas = 6; 
+    int titulo_comprimento = 50;  
+    int start_x = (MAXX - titulo_comprimento) / 2;  // Calculando a posição de início para centralizar -- vamos usar em vários momentos
 
-
-    // Exibe o título ASCII centralizado
-    screenGotoxy(start_x, 5);  // Posição de início para o título (ajuste a linha se necessário)
+    screenGotoxy(start_x, 5);
     printf("██████╗░██╗░░░░░░█████╗░░█████╗░██╗░░██╗██╗░░░██╗\n");
     screenGotoxy(start_x, 6);
     printf("██╔══██╗██║░░░░░██╔══██╗██╔══██╗██║░██╔╝╚██╗░██╔╝\n");
@@ -127,40 +122,32 @@ void exibirTelaInicial() {
     screenGotoxy(start_x, 10);
     printf("╚═════╝░╚══════╝░╚════╝░░╚════╝░╚═╝░░╚═╝░░░╚═╝░░░\n");
 
-   // Solicitar o nome do jogador
     char nome[50];
-    screenGotoxy((MAXX - 42) / 2, 12);  // Posição para a mensagem de solicitação do nome
+    screenGotoxy((MAXX - 42) / 2, 12);
     printf("Digite seu nome: ");
-    fgets(nome, sizeof(nome), stdin);  // Lê o nome do jogador
-
-    // Remover o caractere de nova linha do nome, se houver
+    fgets(nome, sizeof(nome), stdin);
     nome[strcspn(nome, "\n")] = '\0';
 
-    // Exibir a mensagem com o nome do jogador
     screenGotoxy((MAXX - 42) / 2, 14);
     printf("Bem-vindo(a), %s! Prepare-se para o jogo!", nome);
 
-    // Exibe a mensagem de preparação centralizada
     screenGotoxy((MAXX - 42) / 2, 16);
     printf("Pressione ENTER para começar...\n");
 
-    // Aguarde o usuário iniciar
+    // Aguardando usuário iniciar...
     getchar();
 }
 
 
 void exibirInstrucoes() {
-    system("clear"); // Limpa o terminal para as instruções
+    system("clear"); 
     
-    // Desenha as bordas ao redor da área de instruções
     screenDrawBorders();
 
-    // Centralizar o título das instruções
-    int instrucoes_comprimento = 60; // Comprimento médio das instruções
-    int start_x = (MAXX - instrucoes_comprimento) / 2;  // Recalcular a posição de início para centralizar
+    int instrucoes_comprimento = 60; 
+    int start_x = (MAXX - instrucoes_comprimento) / 2;
 
-    // Exibe o título das instruções com borda
-    screenGotoxy(start_x, 5);  // Posição de início para o título
+    screenGotoxy(start_x, 5);  
     screenGotoxy(start_x, 6);
     printf("                                                          \n");
     screenGotoxy(start_x, 7);
@@ -168,7 +155,6 @@ void exibirInstrucoes() {
     screenGotoxy(start_x, 8);
     printf("                                                          \n");
 
-    // Exibe o conteúdo das instruções, centralizado
     screenGotoxy(start_x, 9);
     printf(" Use as setas para mover as peças:                        \n");
     screenGotoxy(start_x, 10);
@@ -182,7 +168,6 @@ void exibirInstrucoes() {
     screenGotoxy(start_x, 14);
     printf("                                                          \n");
 
-    // Exibe a mensagem dentro da borda
     screenGotoxy(start_x, 15);
     printf("                                                          \n");
     screenGotoxy(start_x, 16);
@@ -190,14 +175,9 @@ void exibirInstrucoes() {
     screenGotoxy(start_x, 17);
     printf("                                                          \n");
 
-    // Espera o usuário pressionar Enter para continuar
+    // Enter do usuário
     getchar();
 }
-
-
-
-
-
 
 // Função que verifica se a peça colidiu
 int checkCollision(Piece *piece) {
@@ -207,12 +187,12 @@ int checkCollision(Piece *piece) {
                 int x = piece->x + i;
                 int y = piece->y + j;
                 if (x < 0 || x >= WIDTH || y >= HEIGHT || board[x][y]) {
-                    return 1;  // Colidiu com a borda ou outra peça
+                    return 1;  // Colidiu com a borda/outra peça
                 }
             }
         }
     }
-    return 0;  // Não houve colisão
+    return 0;  // Sem colisão
 }
 
 // Função que coloca a peça no tabuleiro
@@ -229,28 +209,28 @@ void placePiece(Piece *piece) {
 // Função que rotaciona a peça
 void rotatePiece() {
     int oldRotation = currentPiece.rotation;
-    currentPiece.rotation = (currentPiece.rotation + 1) % 4;  // Rotaciona para a próxima posição
+    currentPiece.rotation = (currentPiece.rotation + 1) % 4;  // Rotaciona p/ próxima posição
     if (checkCollision(&currentPiece)) {
-        currentPiece.rotation = oldRotation;  // Se houver colisão, volta para a rotação anterior
+        currentPiece.rotation = oldRotation;  // Sem colisão, volta p/ rotação anterior
     }
 }
 
-// Função que move a peça na horizontal
+// Função que move a peça (horizontal)
 void movePiece(int dx) {
-    currentPiece.x += dx;  // Desloca a peça para a esquerda (dx=-1) ou para a direita (dx=1)
+    currentPiece.x += dx;  // Esquerda (dx=-1) / Direita (dx=1)
     if (checkCollision(&currentPiece)) {
-        currentPiece.x -= dx;  // Se houver colisão, desfaz o movimento
+        currentPiece.x -= dx;  // Com colisão desfaz o movimento
     }
 }
 
 // Função que desenha a peça na tela
 void drawPiece(Piece *piece) {
-    screenSetColor(RED, BLACK);  // Define a cor para desenhar a peça
+    screenSetColor(RED, BLACK);  // Definindo cor
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            if (tetrominos[piece->type][piece->rotation][i][j]) {  // Verifica se a célula da peça está ativa
-                screenGotoxy(SCRSTARTX + (piece->x + i) * BLOCK_SIZE, SCRSTARTY + piece->y + j);  // Calcula a posição na tela
-                printf("[]");  // Desenha o bloco da peça
+            if (tetrominos[piece->type][piece->rotation][i][j]) {  // Verificando se a célula está ativa
+                screenGotoxy(SCRSTARTX + (piece->x + i) * BLOCK_SIZE, SCRSTARTY + piece->y + j);  // Calculando a posição na tela
+                printf("[]");  // Desenho do bloxo da peça
             }
         }
     }
@@ -268,15 +248,15 @@ void drawBoard() {
             }
         }
     }
-    // Exibe o nível e a pontuação
+
     screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 2, SCRSTARTY);
     printf("Nível: %d", level);
     screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 2, SCRSTARTY + 1);
     printf("Pontuação: %d", score);
 }
 
+// Função que remove linhas completas
 void removeFullLines() {
-    // Função que remove linhas completas
     for (int j = 0; j < HEIGHT; j++) {
         int full = 1;
         for (int i = 0; i < WIDTH; i++) {
@@ -294,13 +274,12 @@ void removeFullLines() {
             for (int i = 0; i < WIDTH; i++) {
                 board[i][0] = 0;
             }
-            score += 100; // Adiciona 100 pontos por linha completa
+            score += 100; // 100pts de linha completa
         }
     }
 }
 
-
-
+//
 void salvarRanking(Ranking *ranking, int numJogadores) {
     FILE *file = fopen("ranking.txt", "w");
     if (file == NULL) {
@@ -313,6 +292,7 @@ void salvarRanking(Ranking *ranking, int numJogadores) {
     fclose(file);
 }
 
+//
 int carregarRanking(Ranking *ranking) {
     FILE *file = fopen("ranking.txt", "r");
     int numJogadores = 0;
@@ -325,11 +305,12 @@ int carregarRanking(Ranking *ranking) {
     return numJogadores;
 }
 
+//
 void salvarPontuacaoNoRanking(int score) {
     char nome[50];
 
     printf("Digite seu nome para o ranking: ");
-    fflush(stdout);  // Garante que a mensagem é exibida imediatamente
+    fflush(stdout);  // Garantindo q msg seja exibida de imediato
     fgets(nome, sizeof(nome), stdin);  
     nome[strcspn(nome, "\n")] = '\0';  
 
@@ -339,7 +320,7 @@ void salvarPontuacaoNoRanking(int score) {
         return;
     }
 
-    // Adiciona o nome e a pontuação ao arquivo
+    // Adicionando no arquivo
     fprintf(rankingFile, "%s %d\n", nome, score);
 
     fclose(rankingFile);
@@ -354,6 +335,7 @@ int compararPontuacao(const void *a, const void *b) {
     return rankingB->pontuacao - rankingA->pontuacao;
 }
 
+//
 void exibirRanking() {
     Ranking ranking[100]; 
     int numJogadores = carregarRanking(ranking);
@@ -376,13 +358,12 @@ void exibirRanking() {
     screenGotoxy((MAXX - 144) / 2, 8);
     printf("     |_|_\\/_/ \\_\\_|\\_|_|\\_\\___|_|\\_|\\___| |___/ \\___/|___/  \\__/ \\___/ \\___/_/ \\_\\___/ \\___/|_|_\\___|___/\n");
 
-    int linhaNum = 10;  // Linha inicial para o conteúdo do ranking
+    int linhaNum = 10; 
     for (int i = 0; i < numJogadores; i++) {
-        // Formata cada linha com a posição, nome e pontuação
+        //Posição, nome e pts
         char linha[100];
         snprintf(linha, sizeof(linha), "%d. %s - %d", i + 1, ranking[i].nome, ranking[i].pontuacao);
 
-        // Calcula o ponto inicial para centralizar a linha
         int comprimentoLinha = strlen(linha);
         int start_x = (MAXX - comprimentoLinha) / 2;
 
@@ -390,31 +371,27 @@ void exibirRanking() {
         printf("%s\n", linha);
     }
 
-    // Mensagem de retorno ao menu 
     char msg[] = "Pressione ENTER para voltar pro menu principal...";
     int msgLength = strlen(msg);
     int start_x = (MAXX - msgLength) / 2;
     screenGotoxy(start_x, linhaNum + 1);
     printf("%s\n", msg);
 
-    // Espera o usuário pressionar ENTER antes de voltar ao menu
+    // Enter...
     getchar();
 }
 
 
 // Função para exibir "Game Over" e voltar ao menu
 void exibirGameOver() {
-    system("clear"); // Limpa o terminal (ajuste para "cls" se estiver no Windows)
+    system("clear"); 
 
-    // Chama a função para desenhar as bordas
     screenDrawBorders();
 
-    // Centralizar o título ASCII
     int titulo_comprimento = 72;  // Comprimento médio do título (ajuste conforme necessário)
-    int start_x = (MAXX - titulo_comprimento) / 2;  // Calcula a posição de início para centralizar
+    int start_x = (MAXX - titulo_comprimento) / 2; 
 
-    // Exibe o título ASCII centralizado
-    screenGotoxy(start_x, 5);  // Posição de início para o título (ajuste a linha se necessário)
+    screenGotoxy(start_x, 5); 
     printf(" ██████   █████  ███    ███ ███████      ██████  ██    ██ ███████ ██████  \n");
     screenGotoxy(start_x, 6);
     printf("██       ██   ██ ████  ████ ██          ██    ██ ██    ██ ██      ██   ██ \n");
@@ -425,12 +402,12 @@ void exibirGameOver() {
     screenGotoxy(start_x, 9);
     printf(" ██████  ██   ██ ██      ██ ███████      ██████    ████   ███████ ██   ██ \n");
 
-    // Exibe a mensagem de "game over" centralizada
+    // Exibindo centralizada - resolvido!!
     screenGotoxy((MAXX - 38) / 2, 12);
     printf("O Jogo Acabou! Você perdeu!\n");
 
    printf("\nPressione ENTER para voltar ao menu principal...\n");
-    getchar();  // Aguarda o ENTER
+    getchar();  // Enter..
 
 }
 
@@ -438,13 +415,13 @@ void exibirGameOver() {
 void exibirMenu(int score) {
     int opcao;
     char input[10];
-    int pontuacaoSalva = 0;  // Flag para verificar se a pontuação já foi salva
-    int rankingExibido = 0;  // Flag para verificar se o ranking já foi exibido
+    int pontuacaoSalva = 0;  // Flag -- verificar se a pontuação já foi salva e mostrar msg 
+    int rankingExibido = 0;  // Flag -- verificar se o ranking já foi exibido e mostrar msg 
 
     do {
-        system("clear"); // Limpa o terminal
-        // Exibe o título ASCII
-        screenGotoxy((MAXX - 128) / 2, 5);  // Posição de início para centralizar
+        system("clear"); 
+
+        screenGotoxy((MAXX - 128) / 2, 5); 
         printf("      __  __ ___ _  _ _   _   ___ ___ ___ _  _  ___ ___ ___  _   _    \n");
         screenGotoxy((MAXX - 128) / 2, 6);
         printf("     |  \\/  | __| \\| | | | | | _ \\ _ \\_ _| \\| |/ __|_ _| _ \\/_\\ | |   \n");
@@ -453,14 +430,14 @@ void exibirMenu(int score) {
         screenGotoxy((MAXX - 128) / 2, 8);
         printf("     |_|  |_|___|_|\\_|\\___/  |_| |_|_\\___|_|\\_|\\___|___|_|/_/ \\_\\____|\n");
 
-        // Centraliza as opções do menu
-        screenGotoxy((MAXX - 24) / 2, 10);  // Ajuste para centralizar "1. Salvar pontuação"
+        // Ajustes p/ centralizar  
+        screenGotoxy((MAXX - 24) / 2, 10);
         printf("1. Salvar pontuação\n");
 
-        screenGotoxy((MAXX - 24) / 2, 11);  // Ajuste para centralizar "2. Ver ranking"
+        screenGotoxy((MAXX - 24) / 2, 11);
         printf("2. Ver ranking\n");
 
-        screenGotoxy((MAXX - 24) / 2, 12);  // Ajuste para centralizar "3. Sair"
+        screenGotoxy((MAXX - 24) / 2, 12);
         printf("3. Sair\n");
 
         // Centraliza o prompt para escolha
