@@ -134,7 +134,7 @@ Divirta-se!
 **Rotação de Peças:**
 - Implementar a rotação das peças de forma consistente e sem colisões foi desafiador, especialmente para peças próximas às bordas.
 **Persistência do Ranking:**
-  - Manipular arquivos para salvar e carregar dados exigiu cuidados com formatação e ordenação para garantir a integridade do ranking.
+- Manipular arquivos para salvar e carregar dados exigiu cuidados com formatação e ordenação para garantir a integridade do ranking.
 
 
 ## 👩‍💻 Membros & Perfis do GitHub
