@@ -9,52 +9,50 @@
 #define ALTURA 20
 #define TAM_BLOCO 2
 
-//Todas as nossas funções listadas antes da main -- sempre add novas lá pra facilitar!
-
 int nivel = 1; 
 int pontuacao = 0;
 int atualModo = 1;
 
 void screenDrawBorders();
-// Definição das formas das peças com todas as rotações possíveis
+
 char tetrominos[7][4][4][4] = {
-    { // I
+    { 
         { {1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
         { {0, 1, 0, 0}, {0, 1, 0, 0}, {0, 1, 0, 0}, {0, 1, 0, 0} },
         { {1, 1, 1, 1}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
         { {0, 1, 0, 0}, {0, 1, 0, 0}, {0, 1, 0, 0}, {0, 1, 0, 0} }
     },
-    { // O
+    { 
         { {1, 1, 0, 0}, {1, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
         { {1, 1, 0, 0}, {1, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
         { {1, 1, 0, 0}, {1, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
         { {1, 1, 0, 0}, {1, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} }
     },
-    { // T
+    { 
         { {1, 1, 1, 0}, {0, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
         { {0, 1, 0, 0}, {1, 1, 0, 0}, {0, 1, 0, 0}, {0, 0, 0, 0} },
         { {0, 1, 0, 0}, {1, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
         { {0, 1, 0, 0}, {0, 1, 1, 0}, {0, 1, 0, 0}, {0, 0, 0, 0} }
     },
-    { // S
+    { 
         { {0, 1, 1, 0}, {1, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
         { {1, 0, 0, 0}, {1, 1, 0, 0}, {0, 1, 0, 0}, {0, 0, 0, 0} },
         { {0, 1, 1, 0}, {1, 1, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
         { {1, 0, 0, 0}, {1, 1, 0, 0}, {0, 1, 0, 0}, {0, 0, 0, 0} }
     },
-    { // Z
+    { 
         { {1, 1, 0, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
         { {0, 1, 0, 0}, {1, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 0, 0} },
         { {1, 1, 0, 0}, {0, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
         { {0, 1, 0, 0}, {1, 1, 0, 0}, {1, 0, 0, 0}, {0, 0, 0, 0} }
     },
-    { // L
+    { 
         { {1, 1, 1, 0}, {1, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
         { {1, 1, 0, 0}, {0, 1, 0, 0}, {0, 1, 0, 0}, {0, 0, 0, 0} },
         { {0, 0, 1, 0}, {1, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
         { {0, 1, 0, 0}, {0, 1, 0, 0}, {1, 1, 0, 0}, {0, 0, 0, 0} }
     },
-    { // J
+    { 
         { {1, 1, 1, 0}, {0, 0, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
         { {0, 1, 0, 0}, {0, 1, 0, 0}, {1, 1, 0, 0}, {0, 0, 0, 0} },
         { {1, 0, 0, 0}, {1, 1, 1, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} },
@@ -62,10 +60,8 @@ char tetrominos[7][4][4][4] = {
     }
 };  
 
-// Estado do tabuleiro
 int tabuleiro[LARGURA][ALTURA];
 
-// Estrutura p/ representar uma peça
 typedef struct {
     int x, y;
     int type;
@@ -75,7 +71,6 @@ typedef struct {
 Peca atualPeca;
 struct RankingCelula *head = NULL;
 
-// Estrutura p/ armazenar o ranking
 typedef struct RankingCelula {
     char nome[50];
     int pontuacao;
@@ -83,15 +78,13 @@ typedef struct RankingCelula {
 } RankingCelula;
 
 void exibirTelaInicial() {
-    system("clear"); // Limpando o terminal -- checar se podemos mudar isso (ajuste pra 'pica-pisca' do terminal)
+    system("clear"); 
 
-    // Chama a função para desenhar as bordas
     screenDrawBorders();
 
-    // Centralizar o título ASCII
     int titulo_linhas = 6; 
     int titulo_comprimento = 50;  
-    int start_x = (MAXX - titulo_comprimento) / 2;  // Calculando a posição de início para centralizar -- vamos usar em vários momentos
+    int start_x = (MAXX - titulo_comprimento) / 2; 
 
     screenGotoxy(start_x, 5);
     printf("██████╗░██╗░░░░░░█████╗░░█████╗░██╗░░██╗██╗░░░██╗\n");
@@ -118,7 +111,6 @@ void exibirTelaInicial() {
     screenGotoxy((MAXX - 42) / 2, 16);
     printf("Pressione ENTER para começar...\n");
 
-    // Aguardando usuário ...
     getchar();
 }
 
@@ -160,7 +152,7 @@ int escolherModo() {
             getchar();  
         }
 
-    } while (modo < 1 || modo > 2);  // Continua até escolha válida
+    } while (modo < 1 || modo > 2); 
 
     return modo; 
 }
@@ -183,7 +175,7 @@ void exibirInstrucoes(int modo) {
     screenGotoxy(start_x, 8);
     printf("                                                              \n");
 
-    if (modo == 1) {  // Modo Clássico
+    if (modo == 1) { 
         screenGotoxy(start_x, 9);
         printf("                INSTRUÇÕES DO MODO CLÁSSICO               \n");
 
@@ -198,7 +190,7 @@ void exibirInstrucoes(int modo) {
         screenGotoxy(start_x, 16);
         printf("  S: Acelerar a queda da peça                              \n");
 
-    } else if (modo == 2) {  // Modo Desafio
+    } else if (modo == 2) {  
         screenGotoxy(start_x, 9);
         printf("                INSTRUÇÕES DO MODO DESAFIO                 \n");
 
@@ -215,11 +207,9 @@ void exibirInstrucoes(int modo) {
     screenGotoxy(start_x, 17);
     printf("                                                               \n");
 
-    // Enter do usuário
     getchar();
 }
 
-// Função que verifica se a peça colidiu
 int checkColisao(Peca *peca) {
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
@@ -227,60 +217,55 @@ int checkColisao(Peca *peca) {
                 int x = peca->x + i;
                 int y = peca->y + j;
                 if (x < 0 || x >= LARGURA || y >= ALTURA || tabuleiro[x][y]) {
-                    return 1;  // Colidiu com a borda/outra peça
+                    return 1;  
                 }
             }
         }
     }
-    return 0;  // Sem colisão
+    return 0;  
 }
 
-// Função que coloca a peça no tabuleiro
 void colocaPeca(Peca *peca) {
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
             if (tetrominos[peca->type][peca->rotacao][i][j]) {
-                tabuleiro[peca->x + i][peca->y + j] = 1;  // Marca o tabuleiro com a peça
+                tabuleiro[peca->x + i][peca->y + j] = 1;  
             }
         }
     }
 }
 
-// Função que rotaciona a peça
 void rotacionaPeca() {
     int antigaRotacao = atualPeca.rotacao;
-    atualPeca.rotacao = (atualPeca.rotacao + 1) % 4;  // Rotaciona p/ próxima posição
+    atualPeca.rotacao = (atualPeca.rotacao + 1) % 4;  
     if (checkColisao(&atualPeca)) {
-        atualPeca.rotacao = antigaRotacao;  // Sem colisão, volta p/ rotação anterior
+        atualPeca.rotacao = antigaRotacao;  
     }
 }
 
-// Função que rotaciona a peça no sentido anti-horário 
 void rotacionaPecaContrario() {
     int antigaRotacao = atualPeca.rotacao;
-    atualPeca.rotacao = (atualPeca.rotacao + 3) % 4;  // Subtrair rotação (anti-horário)
+    atualPeca.rotacao = (atualPeca.rotacao + 3) % 4; 
 
     if (checkColisao(&atualPeca)) {
-        atualPeca.rotacao = antigaRotacao;  // Sem colisão, volta para rotação anterior
+        atualPeca.rotacao = antigaRotacao; 
     }
 }
 
-// Função que move a peça (horizontal)
 void movePeca(int dx) {
-    atualPeca.x += dx;  // Esquerda (dx=-1) / Direita (dx=1)
+    atualPeca.x += dx;  
     if (checkColisao(&atualPeca)) {
-        atualPeca.x -= dx;  // Com colisão desfaz o movimento
+        atualPeca.x -= dx; 
     }
 }
 
-// Função que desenha a peça na tela
 void desenhaPeca(Peca *peca) {
-    screenSetColor(RED, BLACK);  // Definindo cor
+    screenSetColor(RED, BLACK);  
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            if (tetrominos[peca->type][peca->rotacao][i][j]) {  // Verificando se a célula está ativa
-                screenGotoxy(SCRSTARTX + (peca->x + i) * TAM_BLOCO, SCRSTARTY + peca->y + j);  // Calculando a posição na tela
-                printf("[]");  // Desenho do bloxo da peça
+            if (tetrominos[peca->type][peca->rotacao][i][j]) { 
+                screenGotoxy(SCRSTARTX + (peca->x + i) * TAM_BLOCO, SCRSTARTY + peca->y + j);  
+                printf("[]");  
             }
         }
     }
@@ -343,7 +328,6 @@ void desenhaTabuleiro() {
 
 }
 
-// Função que remove linhas completas
 void removeLinhaCompleta() {
     for (int j = 0; j < ALTURA; j++) {
         int full = 1;
@@ -362,7 +346,7 @@ void removeLinhaCompleta() {
             for (int i = 0; i < LARGURA; i++) {
                 tabuleiro[i][0] = 0;
             }
-            pontuacao += 100; // 100pts de linha completa
+            pontuacao += 100; 
         }
     }
 }
@@ -391,18 +375,18 @@ RankingCelula* carregarRanking() {
 
     RankingCelula *head = NULL, *tail = NULL;
     while (!feof(file)) {
-        RankingCelula *newNode = (RankingCelula*)malloc(sizeof(RankingCelula));
-        if (fscanf(file, "%49s %d", newNode->nome, &newNode->pontuacao) == 2) {
-            newNode->next = NULL;
+        RankingCelula *novaCelula = (RankingCelula*)malloc(sizeof(RankingCelula));
+        if (fscanf(file, "%49s %d", novaCelula->nome, &novaCelula->pontuacao) == 2) {
+            novaCelula->next = NULL;
             if (head == NULL) {
-                head = newNode;
-                tail = newNode;
+                head = novaCelula;
+                tail = novaCelula;
             } else {
-                tail->next = newNode;
-                tail = newNode;
+                tail->next = novaCelula;
+                tail = novaCelula;
             }
         } else {
-            free(newNode);
+            free(novaCelula);
         }
     }
     fclose(file);
@@ -416,21 +400,21 @@ void salvarPontuacaoNoRanking(RankingCelula **head, int pontuacao) {
     fgets(nome, sizeof(nome), stdin);
     nome[strcspn(nome, "\n")] = '\0';
 
-    RankingCelula *newNode = (RankingCelula*)malloc(sizeof(RankingCelula));
-    strcpy(newNode->nome, nome);
-    newNode->pontuacao = pontuacao;
-    newNode->next = NULL;
+    RankingCelula *novaCelula = (RankingCelula*)malloc(sizeof(RankingCelula));
+    strcpy(novaCelula->nome, nome);
+    novaCelula->pontuacao = pontuacao;
+    novaCelula->next = NULL;
 
     if (*head == NULL || (*head)->pontuacao <= pontuacao) {
-        newNode->next = *head;
-        *head = newNode;
+        novaCelula->next = *head;
+        *head = novaCelula;
     } else {
         RankingCelula *current = *head;
         while (current->next != NULL && current->next->pontuacao > pontuacao) {
             current = current->next;
         }
-        newNode->next = current->next;
-        current->next = newNode;
+        novaCelula->next = current->next;
+        current->next = novaCelula;
     }
 
     FILE *file = fopen("ranking.txt", "a");  
@@ -453,7 +437,6 @@ void exibirRanking() {
 
     system("clear");
 
-    // Exibindo o letreiro do ranking no topo
     screenGotoxy((MAXX - 144) / 2, 5);
     printf("      ___    _   _  _ _  _____ _  _  ___   ___   ___  ___      _  ___   ___   _   ___   ___  ___ ___ ___ \n");
     screenGotoxy((MAXX - 144) / 2, 6);
@@ -468,7 +451,6 @@ void exibirRanking() {
     char nome[50];
     int pontuacao;
 
-    // Ler o ranking do arquivo
     while (fscanf(file, "%49s %d", nome, &pontuacao) == 2) {
         char linha[100];
         snprintf(linha, sizeof(linha), "%d. %s - %d", posicao++, nome, pontuacao);
@@ -480,14 +462,12 @@ void exibirRanking() {
         printf("%s\n", linha);
     }
 
-    // Mensagem para voltar ao menu principal
     char msg[] = "Pressione ENTER para voltar pro menu principal...";
     int msgLength = strlen(msg);
     int start_x = (MAXX - msgLength) / 2;
     screenGotoxy(start_x, linhaNum + 1);
     printf("%s\n", msg);
 
-    // Espera o usuário pressionar ENTER
     getchar();
     fclose(file);
 }
@@ -502,13 +482,12 @@ void liberarRanking(RankingCelula *head) {
     }
 }
 
-// Função para exibir "Game Over" e voltar ao menu
 void exibirGameOver() {
     system("clear"); 
 
     screenDrawBorders();
 
-    int titulo_comprimento = 72;  // Comprimento médio do título (ajuste conforme necessário)
+    int titulo_comprimento = 72;  
     int start_x = (MAXX - titulo_comprimento) / 2; 
 
     screenGotoxy(start_x, 5); 
@@ -522,12 +501,11 @@ void exibirGameOver() {
     screenGotoxy(start_x, 9);
     printf(" ██████  ██   ██ ██      ██ ███████      ██████    ████   ███████ ██   ██ \n");
 
-    // Exibindo centralizada - resolvido!!
     screenGotoxy((MAXX - 38) / 2, 12);
     printf("O Jogo Acabou! Você perdeu!\n");
 
    printf("\nPressione ENTER para voltar ao menu principal...\n");
-    getchar();  // Enter..
+    getchar();  
 
 }
 
@@ -535,8 +513,8 @@ void exibirGameOver() {
 void exibirMenu(RankingCelula **head, int pontuacao) {
     int opcao;
     char input[10];
-    int pontuacaoSalva = 0;  // Flag -- verificar se a pontuação já foi salva e mostrar msg 
-    int rankingExibido = 0;  // Flag -- verificar se o ranking já foi exibido e mostrar msg 
+    int pontuacaoSalva = 0;  
+    int rankingExibido = 0;  
 
     do {
         system("clear"); 
@@ -550,7 +528,6 @@ void exibirMenu(RankingCelula **head, int pontuacao) {
         screenGotoxy((MAXX - 128) / 2, 8);
         printf("     |_|  |_|___|_|\\_|\\___/  |_| |_|_\\___|_|\\_|\\___|___|_|/_/ \\_\\____|\n");
 
-        // Ajustes p/ centralizar  
         screenGotoxy((MAXX - 24) / 2, 10);
         printf("1. Salvar pontuação\n");
 
@@ -562,10 +539,10 @@ void exibirMenu(RankingCelula **head, int pontuacao) {
 
         screenGotoxy((MAXX - 24) / 2, 14);  
         printf("Escolha uma opção: ");
-        fflush(stdout); // Garantindo que a msg seja exibida de imediato
+        fflush(stdout);
 
         if (fgets(input, sizeof(input), stdin) != NULL) {
-            opcao = atoi(input);  // Lê str, converte para inteiro
+            opcao = atoi(input); 
         } else {
             opcao = 0;
         }
@@ -574,7 +551,7 @@ void exibirMenu(RankingCelula **head, int pontuacao) {
             case 1:
                 if (!pontuacaoSalva) {  
                     salvarPontuacaoNoRanking(head, pontuacao);
-                    pontuacaoSalva = 1;  // Marca flag -- pontuação salva
+                    pontuacaoSalva = 1; 
                 } else {
                     printf("A pontuação já foi salva!\n");
                     printf("Pressione ENTER para continuar...");
@@ -621,19 +598,19 @@ void descePeca() {
 }
 
 void descePecaMaisRapido() {
-    atualPeca.y++; //1a descida
+    atualPeca.y++;
     if (!checkColisao(&atualPeca)) {
-        atualPeca.y++; // S/ colisão? 2a descida
+        atualPeca.y++; 
         if (!checkColisao(&atualPeca)) {
-            atualPeca.y++; // S/ colisão? 3a descida
+            atualPeca.y++; 
         }
     }
 
     if (checkColisao(&atualPeca)) {
-        atualPeca.y--;  // Volta a posição se colidir
+        atualPeca.y--; 
         colocaPeca(&atualPeca);
         removeLinhaCompleta();
-        gerarPeca();  // Gerando nova peça
+        gerarPeca(); 
     }
 }
 
@@ -641,19 +618,19 @@ void processaInput() {
     if (keyhit()) {
         int key = readch();
 
-        if (atualModo == 1) {  // Modo Clássico
+        if (atualModo == 1) { 
             switch (key) {
-                case 'a': movePeca(-1); break; // A == esquerda
-                case 'd': movePeca(1); break; // D -- direita
+                case 'a': movePeca(-1); break; 
+                case 'd': movePeca(1); break; 
                 case 's': descePeca(); break;
                 case 'w': rotacionaPeca(); break;
             }
-        } else if (atualModo == 2) {  // Modo Desafio
+        } else if (atualModo == 2) {  
             switch (key) {
-                case 'a': movePeca(1); break;  // A == direita 
-                case 'd': movePeca(-1); break; // D == esquerda 
-                case 's': descePecaMaisRapido(); break; // desce 2x mais
-                case 'w': rotacionaPecaContrario(); break; // anti-horario
+                case 'a': movePeca(1); break; 
+                case 'd': movePeca(-1); break;
+                case 's': descePecaMaisRapido(); break; 
+                case 'w': rotacionaPecaContrario(); break; 
             }
         }
     }
@@ -691,14 +668,14 @@ int main() {
     srand(time(NULL));
     screenInit(1);
     keyboardInit();
-    timerInit(500); // Intervalo de 500ms
+    timerInit(500); 
 
-    gerarPeca(); // Gerando a primeira peça
+    gerarPeca(); 
 
     while (1) {
-        processaInput(); // Entradas do usuário -- movimentação e rotação da peça!
+        processaInput();
         
-        if (timerTimeOver()) { // Verificando se o tempo acabou p/ descer a peça
+        if (timerTimeOver()) { 
             descePeca();
         }
 
@@ -707,7 +684,7 @@ int main() {
         screenUpdate();         
     }
 
-    screenDestroy(); // free()?
+    screenDestroy(); 
     keyboardDestroy(); 
     return 0;
 }
