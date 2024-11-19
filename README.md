@@ -1,42 +1,72 @@
 <p align="center">
   <img
-    src="https://img.shields.io/badge/Status-Em%20desenvolvimento-green?style=flat-square"
+    src="https://img.shields.io/badge/Status-Finalizado!%20-green?style=flat-square"
     alt="Status"
   />
 </p>
 
-
-
-Bem-vindo ao Blocky, uma recriação do clássico jogo de Tetris para ser jogado diretamente no terminal para criar uma experiência divertida e nostálgica! Este projeto foi desenvolvido em C e utiliza uma biblioteca [Acesse Aqui](https://github.com/tgfb/cli-lib/) 
-
 ## 🖥️  Blocky
-Blocky é uma adaptação do clássico jogo Tetris. Trata-se de um jogo de puzzle onde peças de diferentes formatos, chamadas "tetrominós", caem de cima para baixo em um campo de jogo. O objetivo é posicioná-las de maneira a formar linhas horizontais completas, que desaparecem, evitando que as peças se acumulem até o topo. O desafio está em pensar rápido e organizar as peças estrategicamente.
+Bem vindo! Blocky é uma adaptação do clássico jogo Tetris. Trata-se de um jogo de puzzle onde peças de diferentes formatos, chamadas "tetrominós", caem de cima para baixo em um campo de jogo. O objetivo é posicioná-las de maneira a formar linhas horizontais completas, que desaparecem, evitando que as peças se acumulem até o topo. O desafio está em pensar rápido e organizar as peças estrategicamente.
 
 ## 🎲 Objetivo do Jogo
-O objetivo do jogo é é encaixar peças que caem na tela (Tetrominos) para formar linhas horizontais completas no tabuleiro. Quando uma linha é completada, ela é removida, o jogador ganha pontos e as linhas acima da removida descem para ocupar o espaço. O jogo termina quando as peças se acumulam até o topo do tabuleiro. O jogador pode: mover as peças para os lados, girar as peças e acelerar a queda para posicioná-las mais rápido. O objetivo é obter a maior pontuação possível antes que o jogo termine, removendo o máximo de linhas consecutivas e evitando que o tabuleiro fique lotado.
+O objetivo do jogo é é encaixar peças que caem na tela (tetrominós) para formar linhas horizontais completas no tabuleiro. Quando uma linha é completada, ela é removida, o jogador ganha pontos e as linhas acima da removida descem para ocupar o espaço. O jogo termina quando as peças se acumulam até o topo do tabuleiro. O jogador pode: mover as peças para os lados, girar as peças e acelerar a queda para posicioná-las mais rápido. O objetivo é obter a maior pontuação possível antes que o jogo termine, removendo o máximo de linhas consecutivas e evitando que o tabuleiro fique lotado.
+
+## ♟️ Executando o Jogo
+**1. Configuração do Ambiente:**
+   - No Windows: 
+     - Instale um ambiente compatível com Linux, como:
+       - Uma máquina virtual Linux utilizando VirtualBox ou Multipass.
+       - WSL (Windows Subsystem for Linux), que permite executar um terminal Linux diretamente no Windows.
+   - No Linux ou macOS: Utilize o terminal nativo, pois essas plataformas já são compatíveis!
+
+**2. Instalação do GCC:**
+   - Certifique-se de que o GCC (GNU Compiler Collection) está instalado no dispositivo. Caso contrário, instale-o utilizando o gerenciador de pacotes apropriado: Ubuntu/Debian; Fedora; macOS:  Xcode Command 
+
+**3. Clonagem do Repositório:**
+   - Baixar o código do jogo diretamente do repositório GitHub. No terminal, executar:
+     `git clone https://github.com/lavasilva/Blocky`
+
+**4. Compilação e Execução do Código:***
+    - Navegue até a pasta onde o repositório foi clonado:
+       `cd Blocky`<br>
+    - Compile o jogo utilizando o GCC. Utilize o seguinte comando:
+     `gcc ./src/*.c -I./include -o jogo`<br>
+    - Após a compilação, execute o jogo com o comando:
+       `./jogo`<br>
+    - Divirta-se!
+
+## 🕹️ Como Jogar
+**Teclas de Controle:**
+
+No modo clássico:
+- A: Mover para a esquerda
+- D: Mover para a direita
+- W: Girar a peça
+- S: Acelerar a queda da peça
+
+No modo desafio:
+- A: Mover para a direita
+- D: Mover para a esquerda
+- W: Girar a peça no sentido anti-horário
+- S: Acelerar a queda da peça 3x
 
 ## 📄 Principais Funções
 1. **Definições Básicas:**
    - O tabuleiro do jogo tem largura de 10 e altura de 20.
-   - As peças (tetrominos) são representadas em matrizes tridimensionais, incluindo suas rotações possíveis.
+   - As peças (tetrominós) são representadas em matrizes tridimensionais, incluindo suas rotações possíveis.
 
 2. **Funções do Jogo:**
-   - **Exibição:** Funções como `exibirTelaInicial`, `exibirInstrucoes` e `drawBoard` são responsáveis por exibir a interface do jogo no terminal, incluindo o tabuleiro e informações como nível e pontuação.
-   - **Controle de Peças:** Funções como `spawnPiece`, `rotatePiece`, `movePiece` e `drawPiece` lidam com a geração, movimentação, rotação e desenho das peças no tabuleiro.
-   - **Manipulação do Tabuleiro:** Funções como `checkCollision`, `placePiece` e `removeFullLines` verificam colisões, posicionam peças e removem linhas completas, respectivamente.
+   - **Exibição:** Funções como `exibirTelaInicial`, `exibirInstrucoes` e `desenhaTabuleiro` são responsáveis por exibir a interface do jogo no terminal, incluindo o tabuleiro e informações como nível e pontuação.
+   - **Controle de Peças:** Funções como `gerarPeca`, `rotacionaPeca`, `movePeca` e `desenhaPeca` lidam com a geração, movimentação, rotação e desenho das peças no tabuleiro.
+   - **Manipulação do Tabuleiro:** Funções como `checkColisao`, `colocaPeca` e `removeLinhaCompleta` verificam colisões, posicionam peças e removem linhas completas, respectivamente.
 
 3. **Ranking:**
-   - Estruturas e funções para salvar e carregar rankings, armazenando o nome e a pontuação dos jogadores.
+   - Lista encadeada para ordenar pontuações/jogadores e escrevê-las em um arquivo "ranking.txt".
 
 4. **Controle de Fluxo:**
-   - O jogo utiliza funções como `processInput` para interpretar comandos do jogador e ajustar o estado do jogo (movimento, rotação ou queda da peça).
+   - O jogo utiliza funções como `processaInput` para interpretar comandos do jogador e ajustar o estado do jogo (movimento, rotação ou queda da peça).
 
-5. **Características Extras:**
-   - Exibição de bordas decorativas ao redor do jogo.
-   - Título animado e instruções exibidas no início.
-   - Sistema de pontuação e níveis.
-
-Este código segue uma estrutura modular, separando funções por responsabilidade, o que facilita o entendimento e a manutenção. Ele usa bibliotecas externas (`screen.h`, `timer.h`, `keyboard.h`) para lidar com funcionalidades específicas como gráficos no terminal, entrada de teclado e temporização.
+Este código usa bibliotecas externas (`screen.h`, `timer.h`, `keyboard.h`) para lidar com funcionalidades específicas como gráficos no terminal, entrada de teclado e temporização.
 
 ## 🎮 Funcionalidades
 **Tela Inicial e Personalização:**
@@ -45,70 +75,13 @@ Personalize sua experiência iniciando com a inserção do seu nome na tela inic
 **Instruções do Jogo:**
 Uma seção dedicada às instruções para que você nunca fique perdido.
 
-**Jogabilidade:**
-
-Mova as peças para a esquerda, direita ou acelere sua queda.
-Gire as peças para encaixá-las da melhor maneira possível.
-Acelere sua pontuação removendo linhas completas.
-Ranking de Jogadores:
-Registre suas pontuações e veja como você se compara com outros jogadores.
-
-**Interface com Bordas Dinâmicas:**
-Desenho automático das bordas delimitando a área de jogo.
-
-**Funcionalidade Extra:**<br>
+**Funcionalidade Extra: Modo Desafio** <br>
 Prepare-se para uma experiência intensa e diferenciada!<br>
 - Ao começar o jogo e selecionar o modo desafio, o jogo inicia um modo invertido!
         -       Neste modo, os controles são invertidos!                            
                  A: Mover para a Direita                                            
                  D: Mover para a Esquerda      
                  S: Desce duas vezes mais rápido do que o jogo clássico   
-
-
-## 🕹️ Como Jogar
-**Teclas de Controle:**
-
-- A: Mover para a esquerda
-- D: Mover para a direita
-- W: Girar a peça
-- S: Acelerar a queda da peça
-  
-**Dicas:**
-- Pratique o controle de peças para melhorar sua habilidade em encaixar as peças de forma eficiente.
-- Use a rotação de peças para adaptar as formas às linhas disponíveis no tabuleiro.
-
-
-## ♟️ Executando o Jogo
-**1. Configuração do Ambiente:**
-   - No Windows: 
-     - Instale um ambiente compatível com Linux, como:
-       - Uma máquina virtual Linux utilizando VirtualBox ou Multipass.
-       - WSL (Windows Subsystem for Linux), que permite executar um terminal Linux diretamente no Windows.
-   - No Linux ou macOS: Utilize o terminal nativo, pois essas plataformas já são compatíveis.
-
-**2. Instalação do GCC:**
-   - Certifique-se de que o GCC (GNU Compiler Collection) está instalado no dispositivo. Caso contrário, instale-o utilizando o gerenciador de pacotes apropriado: Ubuntu/Debian; Fedora; macOS:  Xcode Command 
-     Line Tools
-
-**3. Clonagem do Repositório:**
-   - Baixar o código do jogo diretamente do repositório GitHub. No terminal, executar:
-     git clone <URL_DO_REPOSITORIO>
-     Substitua <URL_DO_REPOSITORIO> pelo link fornecido para o projeto no GitHub.
-
-**4. Compilação do Código:***
-    - Navegue até a pasta onde o repositório foi clonado:
-       cd <NOME_DO_REPOSITORIO>
-    - Compile o jogo utilizando o GCC. Caso os arquivos estejam organizados em uma estrutura típica com   subpastas `src` e `include`, utilize o seguinte comando:
-     `gcc ./src/*.c -I./include -o exemplo`
-    - `./src/*.c`: Compila todos os arquivos `.c` na pasta `src`.
-    - `-I./include`: Inclui cabeçalhos na pasta `include`.
-    - `-o exemplo`: Define o nome do executável como `exemplo`.
-
-**5. Execução do Jogo:**
-    - Após a compilação, execute o jogo com o comando:
-       ./exemplo
-
-Divirta-se!
 
 
 ## 😅 Dificuldades Encontradas
@@ -118,13 +91,11 @@ Ajusta o tempo de queda das peças para níveis progressivos que foram solicitad
 **2. Colisões Rotacionais :**
 Garantir que as peças não ultrapassem os limites durante rotações realizadas várias verificações.<br>
 **3. Centralização de Conteúdo :**
-Manter o título e mensagens centralizados, independentemente do tamanho da janela, exige cálculos precisos.<br>
-**4. Gerenciamento de Tela:**
-Garantir que as bordas e elementos da interface não pisquem ou sejam sobrescritos, especialmente em consoles de terminal com renderização lenta.<br>
+Manter o título e mensagens centralizados, independentemente do tamanho da janela.<br>
 **5. Rotação de Peças:**
-Implementar a rotação das peças de forma consistente e sem colisões foi desafiador, especialmente para peças próximas às bordas.<br>
+Implementar a rotação das peças de forma consistente e chacando colisões foi desafiador, especialmente para peças próximas às bordas.<br>
 **6. Persistência do Ranking:**
-Manipular arquivos para salvar e carregar dados exigiu cuidados com formatação e ordenação para garantir a integridade do ranking.<br>
+Manipular listas e arquivos para salvar e carregar dados exigiu cuidados com formatação e ordenação para garantir a integridade do ranking.<br>
 
 
 ## 👩‍💻 Membros & Perfis do GitHub
