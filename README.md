@@ -56,7 +56,7 @@ Registre suas pontuações e veja como você se compara com outros jogadores.
 **Interface com Bordas Dinâmicas:**
 Desenho automático das bordas delimitando a área de jogo.
 
-**Funcionalidade Extra:**
+**Funcionalidade Extra:**<br>
 Prepare-se para uma experiência intensa e diferenciada!<br>
 - Ao começar o jogo e selecionar o modo desafio, o jogo inicia um modo invertido!
         -       Neste modo, os controles são invertidos!                            
