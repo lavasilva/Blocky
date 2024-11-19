@@ -63,7 +63,7 @@ char tetrominos[7][4][4][4] = {
 };  
 
 // Estado do tabuleiro
-int board[LARGURA][ALTURA];
+int tabuleiro[LARGURA][ALTURA];
 
 // Estrutura p/ representar uma peça
 typedef struct {
@@ -73,12 +73,14 @@ typedef struct {
 } Peca;
 
 Peca atualPeca;
+struct RankingCelula *head = NULL;
 
 // Estrutura p/ armazenar o ranking
-typedef struct {
+typedef struct RankingCelula {
     char nome[50];
     int pontuacao;
-} Ranking;
+    struct RankingCelula *next;
+} RankingCelula;
 
 void exibirTelaInicial() {
     system("clear"); // Limpando o terminal -- checar se podemos mudar isso (ajuste pra 'pica-pisca' do terminal)
@@ -198,26 +200,20 @@ void exibirInstrucoes(int modo) {
 
     } else if (modo == 2) {  // Modo Desafio
         screenGotoxy(start_x, 9);
-        printf("                INSTRUÇÕES DO MODO DESAFIO                \n");
+        printf("                INSTRUÇÕES DO MODO DESAFIO                 \n");
 
         screenGotoxy(start_x, 12);
-        printf(" Neste modo, os controles são invertidos!                 \n");
+        printf("Neste modo, os controles A e D são invertidos...           \n");
         screenGotoxy(start_x, 13);
-        printf("  A: Mover para a Direita                                  \n");
-        screenGotoxy(start_x, 14);
-        printf("  D: Mover para a Esquerda                                 \n");
-        screenGotoxy(start_x, 15);
-        printf("  W: Girar a peça (sentido anti-horário)                   \n");
-        screenGotoxy(start_x, 16);
-        printf("  S: Acelera a queda da peça                               \n");
+        printf("E as peças caem 3x mais rápido com o S! Bom jogo!          \n");
     }
 
     screenGotoxy(start_x, 15);
-    printf("                                                          \n");
+    printf("                                                               \n");
     screenGotoxy(start_x, 16);
-    printf("      Pressione ENTER para começar...                     \n");
+    printf("               Pressione ENTER para começar...            \n");
     screenGotoxy(start_x, 17);
-    printf("                                                          \n");
+    printf("                                                               \n");
 
     // Enter do usuário
     getchar();
@@ -230,7 +226,7 @@ int checkColisao(Peca *peca) {
             if (tetrominos[peca->type][peca->rotacao][i][j]) {
                 int x = peca->x + i;
                 int y = peca->y + j;
-                if (x < 0 || x >= LARGURA || y >= ALTURA || board[x][y]) {
+                if (x < 0 || x >= LARGURA || y >= ALTURA || tabuleiro[x][y]) {
                     return 1;  // Colidiu com a borda/outra peça
                 }
             }
@@ -244,7 +240,7 @@ void colocaPeca(Peca *peca) {
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
             if (tetrominos[peca->type][peca->rotacao][i][j]) {
-                board[peca->x + i][peca->y + j] = 1;  // Marca o tabuleiro com a peça
+                tabuleiro[peca->x + i][peca->y + j] = 1;  // Marca o tabuleiro com a peça
             }
         }
     }
@@ -291,12 +287,12 @@ void desenhaPeca(Peca *peca) {
 }
 
 
-void drawBoard() {
+void desenhaTabuleiro() {
     screenClear();
     screenSetColor(CYAN, BLACK);
     for (int i = 0; i < LARGURA; i++) {
         for (int j = 0; j < ALTURA; j++) {
-            if (board[i][j]) {
+            if (tabuleiro[i][j]) {
                 screenGotoxy(SCRSTARTX + i * TAM_BLOCO, SCRSTARTY + j);
                 printf("[]");
             }
@@ -352,7 +348,7 @@ void removeLinhaCompleta() {
     for (int j = 0; j < ALTURA; j++) {
         int full = 1;
         for (int i = 0; i < LARGURA; i++) {
-            if (!board[i][j]) {
+            if (!tabuleiro[i][j]) {
                 full = 0;
                 break;
             }
@@ -360,87 +356,104 @@ void removeLinhaCompleta() {
         if (full) {
             for (int k = j; k > 0; k--) {
                 for (int i = 0; i < LARGURA; i++) {
-                    board[i][k] = board[i][k - 1];
+                    tabuleiro[i][k] = tabuleiro[i][k - 1];
                 }
             }
             for (int i = 0; i < LARGURA; i++) {
-                board[i][0] = 0;
+                tabuleiro[i][0] = 0;
             }
             pontuacao += 100; // 100pts de linha completa
         }
     }
 }
 
-//
-void salvarRanking(Ranking *ranking, int numJogadores) {
+void salvarRanking(RankingCelula *head) {
     FILE *file = fopen("ranking.txt", "w");
     if (file == NULL) {
         printf("Erro ao salvar o ranking!\n");
         return;
     }
-    for (int i = 0; i < numJogadores; i++) {
-        fprintf(file, "%s %d\n", ranking[i].nome, ranking[i].pontuacao);
+
+    RankingCelula *current = head;
+    while (current != NULL) {
+        fprintf(file, "%s %d\n", current->nome, current->pontuacao);
+        current = current->next;
     }
     fclose(file);
 }
 
-//
-int carregarRanking(Ranking *ranking) {
+RankingCelula* carregarRanking() {
     FILE *file = fopen("ranking.txt", "r");
-    int numJogadores = 0;
-    if (file != NULL) {
-        while (fscanf(file, "%49s %d", ranking[numJogadores].nome, &ranking[numJogadores].pontuacao) != EOF) {
-            numJogadores++;
-        }
-        fclose(file);
+    if (file == NULL) {
+        printf("Nenhum ranking salvo encontrado.\n");
+        return NULL;
     }
-    return numJogadores;
+
+    RankingCelula *head = NULL, *tail = NULL;
+    while (!feof(file)) {
+        RankingCelula *newNode = (RankingCelula*)malloc(sizeof(RankingCelula));
+        if (fscanf(file, "%49s %d", newNode->nome, &newNode->pontuacao) == 2) {
+            newNode->next = NULL;
+            if (head == NULL) {
+                head = newNode;
+                tail = newNode;
+            } else {
+                tail->next = newNode;
+                tail = newNode;
+            }
+        } else {
+            free(newNode);
+        }
+    }
+    fclose(file);
+    return head;
 }
 
-//
-void salvarPontuacaoNoRanking(int pontuacao) {
+void salvarPontuacaoNoRanking(RankingCelula **head, int pontuacao) {
     char nome[50];
-
     printf("Digite seu nome para o ranking: ");
-    fflush(stdout);  // Garantindo q msg seja exibida de imediato
-    fgets(nome, sizeof(nome), stdin);  
-    nome[strcspn(nome, "\n")] = '\0';  
+    fflush(stdout);
+    fgets(nome, sizeof(nome), stdin);
+    nome[strcspn(nome, "\n")] = '\0';
 
-    FILE *rankingFile = fopen("ranking.txt", "a");
-    if (rankingFile == NULL) {
+    RankingCelula *newNode = (RankingCelula*)malloc(sizeof(RankingCelula));
+    strcpy(newNode->nome, nome);
+    newNode->pontuacao = pontuacao;
+    newNode->next = NULL;
+
+    if (*head == NULL || (*head)->pontuacao <= pontuacao) {
+        newNode->next = *head;
+        *head = newNode;
+    } else {
+        RankingCelula *current = *head;
+        while (current->next != NULL && current->next->pontuacao > pontuacao) {
+            current = current->next;
+        }
+        newNode->next = current->next;
+        current->next = newNode;
+    }
+
+    FILE *file = fopen("ranking.txt", "a");  
+    if (file == NULL) {
         printf("Erro ao abrir o arquivo de ranking.\n");
         return;
     }
-
-    // Adicionando no arquivo
-    fprintf(rankingFile, "%s %d\n", nome, pontuacao);
-
-    fclose(rankingFile);
+    fprintf(file, "%s %d\n", nome, pontuacao);
+    fclose(file);
 
     printf("Ranking Atualizado!\n");
 }
 
-// qsort, p/ ordenar em ordem decrescente
-int compararPontuacao(const void *a, const void *b) {
-    Ranking *rankingA = (Ranking *)a;
-    Ranking *rankingB = (Ranking *)b;
-    return rankingB->pontuacao - rankingA->pontuacao;
-}
-
-//
 void exibirRanking() {
-    Ranking ranking[100]; 
-    int numJogadores = carregarRanking(ranking);
-
-    qsort(ranking, numJogadores, sizeof(Ranking), compararPontuacao);
-
-    if (numJogadores == 0) {
+    FILE *file = fopen("ranking.txt", "r");
+    if (file == NULL) {
         printf("Nenhum ranking encontrado.\n");
         return;
     }
 
     system("clear");
 
+    // Exibindo o letreiro do ranking no topo
     screenGotoxy((MAXX - 144) / 2, 5);
     printf("      ___    _   _  _ _  _____ _  _  ___   ___   ___  ___      _  ___   ___   _   ___   ___  ___ ___ ___ \n");
     screenGotoxy((MAXX - 144) / 2, 6);
@@ -450,11 +463,15 @@ void exibirRanking() {
     screenGotoxy((MAXX - 144) / 2, 8);
     printf("     |_|_\\/_/ \\_\\_|\\_|_|\\_\\___|_|\\_|\\___| |___/ \\___/|___/  \\__/ \\___/ \\___/_/ \\_\\___/ \\___/|_|_\\___|___/\n");
 
-    int linhaNum = 10; 
-    for (int i = 0; i < numJogadores; i++) {
-        //Posição, nome e pts
+    int linhaNum = 10;
+    int posicao = 1;
+    char nome[50];
+    int pontuacao;
+
+    // Ler o ranking do arquivo
+    while (fscanf(file, "%49s %d", nome, &pontuacao) == 2) {
         char linha[100];
-        snprintf(linha, sizeof(linha), "%d. %s - %d", i + 1, ranking[i].nome, ranking[i].pontuacao);
+        snprintf(linha, sizeof(linha), "%d. %s - %d", posicao++, nome, pontuacao);
 
         int comprimentoLinha = strlen(linha);
         int start_x = (MAXX - comprimentoLinha) / 2;
@@ -463,16 +480,27 @@ void exibirRanking() {
         printf("%s\n", linha);
     }
 
+    // Mensagem para voltar ao menu principal
     char msg[] = "Pressione ENTER para voltar pro menu principal...";
     int msgLength = strlen(msg);
     int start_x = (MAXX - msgLength) / 2;
     screenGotoxy(start_x, linhaNum + 1);
     printf("%s\n", msg);
 
-    // Enter...
+    // Espera o usuário pressionar ENTER
     getchar();
+    fclose(file);
 }
 
+
+void liberarRanking(RankingCelula *head) {
+    RankingCelula *current = head;
+    while (current != NULL) {
+        RankingCelula *next = current->next;
+        free(current);
+        current = next;
+    }
+}
 
 // Função para exibir "Game Over" e voltar ao menu
 void exibirGameOver() {
@@ -504,7 +532,7 @@ void exibirGameOver() {
 }
 
 
-void exibirMenu(int pontuacao) {
+void exibirMenu(RankingCelula **head, int pontuacao) {
     int opcao;
     char input[10];
     int pontuacaoSalva = 0;  // Flag -- verificar se a pontuação já foi salva e mostrar msg 
@@ -545,7 +573,7 @@ void exibirMenu(int pontuacao) {
         switch (opcao) {
             case 1:
                 if (!pontuacaoSalva) {  
-                    salvarPontuacaoNoRanking(pontuacao);
+                    salvarPontuacaoNoRanking(head, pontuacao);
                     pontuacaoSalva = 1;  // Marca flag -- pontuação salva
                 } else {
                     printf("A pontuação já foi salva!\n");
@@ -577,7 +605,7 @@ void gerarPeca() {
     if (checkColisao(&atualPeca)) {
         screenDestroy();
         exibirGameOver();
-        exibirMenu(pontuacao);
+        exibirMenu(&head, pontuacao);
         exit(0);
     }
 }
@@ -640,19 +668,18 @@ void rotacionaPeca();
 void rotacionaPecaContrario();
 void movePeca(int dx);
 void desenhaPeca(Peca *peca);
-void drawBoard();
+void desenhaTabuleiro();
 void removeLinhaCompleta();
-void salvarRanking(Ranking *ranking, int numJogadores);
-int carregarRanking(Ranking *ranking);
-void salvarPontuacaoNoRanking(int pontuacao);
+void salvarRanking(RankingCelula *head);
+RankingCelula* carregarRanking();
+void salvarPontuacaoNoRanking(RankingCelula **head, int pontuacao); 
 void exibirRanking();
 void exibirGameOver();
-void exibirMenu(int pontuacao);
+void exibirMenu(RankingCelula **head, int pontuacao);
 void gerarPeca();
 void descePeca();
 void descePecaMaisRapido();
 void processaInput();
-//add descePecaMaisRapido, rotacionaPecaContrario aqui dps (org ordem)
 
 int main() {
     exibirTelaInicial();
@@ -675,7 +702,7 @@ int main() {
             descePeca();
         }
 
-        drawBoard(); 
+        desenhaTabuleiro(); 
         desenhaPeca(&atualPeca);
         screenUpdate();         
     }
