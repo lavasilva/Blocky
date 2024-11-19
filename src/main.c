@@ -29,7 +29,7 @@ void exibirMenu();
 void spawnPiece();
 void dropPiece();
 void processInput();
-//add ModoInvertido() e modoClassico aqui dps (org ordem)
+//add dropPieceMaisRapido, rotatePieceContrario aqui dps (org ordem)
 
 int level = 1; 
 int score = 0;
@@ -322,11 +322,49 @@ void drawBoard() {
             }
         }
     }
+    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY);
+    printf(" _______________________");
+    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 1);
+    printf("<                       >");
+    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 2);
+    printf("< Nível: %d              >", level);
+    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 3);
+    printf("<                       >");
+    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 4);
+    printf("< Pontuação: %d          >", score);
+    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 5);
+    printf("<                       >");
+    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 6);
+    printf("<                       >");
+    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 7);
+    printf("<                       >");
+    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 8);
+    printf("<                       >");
+    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 9);
+    printf("<                       >");
+    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 10);
+    printf("<                       >");
+    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 11);
+    printf("<                       >");
+    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 12);
+    printf("<                       >");
+    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 13);
+    printf("<                       >");
+    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 14);
+    printf("<                       >");
+    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 15);
+    printf("<                       >");
+    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 16);
+    printf("<                       >");
+    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 17);
+    printf("<                       >");
+    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 18);
+    printf("<                       >");
+    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 19);
+    printf("<                       >");
+    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 20);
+    printf("<_______________________>");
 
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 2, SCRSTARTY);
-    printf("Nível: %d", level);
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 2, SCRSTARTY + 1);
-    printf("Pontuação: %d", score);
 }
 
 // Função que remove linhas completas
