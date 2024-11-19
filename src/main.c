@@ -5,15 +5,15 @@
 #include <time.h>
 #include <string.h>
 
-#define WIDTH 10
-#define HEIGHT 20
-#define BLOCK_SIZE 2
+#define LARGURA 10
+#define ALTURA 20
+#define TAM_BLOCO 2
 
 //Todas as nossas funções listadas antes da main -- sempre add novas lá pra facilitar!
 
-int level = 1; 
-int score = 0;
-int currentMode = 1;
+int nivel = 1; 
+int pontuacao = 0;
+int atualModo = 1;
 
 void screenDrawBorders();
 // Definição das formas das peças com todas as rotações possíveis
@@ -63,16 +63,16 @@ char tetrominos[7][4][4][4] = {
 };  
 
 // Estado do tabuleiro
-int board[WIDTH][HEIGHT];
+int board[LARGURA][ALTURA];
 
 // Estrutura p/ representar uma peça
 typedef struct {
     int x, y;
     int type;
-    int rotation;
-} Piece;
+    int rotacao;
+} Peca;
 
-Piece currentPiece;
+Peca atualPeca;
 
 // Estrutura p/ armazenar o ranking
 typedef struct {
@@ -224,13 +224,13 @@ void exibirInstrucoes(int modo) {
 }
 
 // Função que verifica se a peça colidiu
-int checkCollision(Piece *piece) {
+int checkColisao(Peca *peca) {
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            if (tetrominos[piece->type][piece->rotation][i][j]) {
-                int x = piece->x + i;
-                int y = piece->y + j;
-                if (x < 0 || x >= WIDTH || y >= HEIGHT || board[x][y]) {
+            if (tetrominos[peca->type][peca->rotacao][i][j]) {
+                int x = peca->x + i;
+                int y = peca->y + j;
+                if (x < 0 || x >= LARGURA || y >= ALTURA || board[x][y]) {
                     return 1;  // Colidiu com a borda/outra peça
                 }
             }
@@ -240,50 +240,50 @@ int checkCollision(Piece *piece) {
 }
 
 // Função que coloca a peça no tabuleiro
-void placePiece(Piece *piece) {
+void colocaPeca(Peca *peca) {
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            if (tetrominos[piece->type][piece->rotation][i][j]) {
-                board[piece->x + i][piece->y + j] = 1;  // Marca o tabuleiro com a peça
+            if (tetrominos[peca->type][peca->rotacao][i][j]) {
+                board[peca->x + i][peca->y + j] = 1;  // Marca o tabuleiro com a peça
             }
         }
     }
 }
 
 // Função que rotaciona a peça
-void rotatePiece() {
-    int oldRotation = currentPiece.rotation;
-    currentPiece.rotation = (currentPiece.rotation + 1) % 4;  // Rotaciona p/ próxima posição
-    if (checkCollision(&currentPiece)) {
-        currentPiece.rotation = oldRotation;  // Sem colisão, volta p/ rotação anterior
+void rotacionaPeca() {
+    int antigaRotacao = atualPeca.rotacao;
+    atualPeca.rotacao = (atualPeca.rotacao + 1) % 4;  // Rotaciona p/ próxima posição
+    if (checkColisao(&atualPeca)) {
+        atualPeca.rotacao = antigaRotacao;  // Sem colisão, volta p/ rotação anterior
     }
 }
 
 // Função que rotaciona a peça no sentido anti-horário 
-void rotatePieceContrario() {
-    int oldRotation = currentPiece.rotation;
-    currentPiece.rotation = (currentPiece.rotation + 3) % 4;  // Subtrair rotação (anti-horário)
+void rotacionaPecaContrario() {
+    int antigaRotacao = atualPeca.rotacao;
+    atualPeca.rotacao = (atualPeca.rotacao + 3) % 4;  // Subtrair rotação (anti-horário)
 
-    if (checkCollision(&currentPiece)) {
-        currentPiece.rotation = oldRotation;  // Sem colisão, volta para rotação anterior
+    if (checkColisao(&atualPeca)) {
+        atualPeca.rotacao = antigaRotacao;  // Sem colisão, volta para rotação anterior
     }
 }
 
 // Função que move a peça (horizontal)
-void movePiece(int dx) {
-    currentPiece.x += dx;  // Esquerda (dx=-1) / Direita (dx=1)
-    if (checkCollision(&currentPiece)) {
-        currentPiece.x -= dx;  // Com colisão desfaz o movimento
+void movePeca(int dx) {
+    atualPeca.x += dx;  // Esquerda (dx=-1) / Direita (dx=1)
+    if (checkColisao(&atualPeca)) {
+        atualPeca.x -= dx;  // Com colisão desfaz o movimento
     }
 }
 
 // Função que desenha a peça na tela
-void drawPiece(Piece *piece) {
+void desenhaPeca(Peca *peca) {
     screenSetColor(RED, BLACK);  // Definindo cor
     for (int i = 0; i < 4; i++) {
         for (int j = 0; j < 4; j++) {
-            if (tetrominos[piece->type][piece->rotation][i][j]) {  // Verificando se a célula está ativa
-                screenGotoxy(SCRSTARTX + (piece->x + i) * BLOCK_SIZE, SCRSTARTY + piece->y + j);  // Calculando a posição na tela
+            if (tetrominos[peca->type][peca->rotacao][i][j]) {  // Verificando se a célula está ativa
+                screenGotoxy(SCRSTARTX + (peca->x + i) * TAM_BLOCO, SCRSTARTY + peca->y + j);  // Calculando a posição na tela
                 printf("[]");  // Desenho do bloxo da peça
             }
         }
@@ -294,64 +294,64 @@ void drawPiece(Piece *piece) {
 void drawBoard() {
     screenClear();
     screenSetColor(CYAN, BLACK);
-    for (int i = 0; i < WIDTH; i++) {
-        for (int j = 0; j < HEIGHT; j++) {
+    for (int i = 0; i < LARGURA; i++) {
+        for (int j = 0; j < ALTURA; j++) {
             if (board[i][j]) {
-                screenGotoxy(SCRSTARTX + i * BLOCK_SIZE, SCRSTARTY + j);
+                screenGotoxy(SCRSTARTX + i * TAM_BLOCO, SCRSTARTY + j);
                 printf("[]");
             }
         }
     }
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY);
+    screenGotoxy(SCRSTARTX + LARGURA * TAM_BLOCO + 1, SCRSTARTY);
     printf(" _______________________");
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 1);
+    screenGotoxy(SCRSTARTX + LARGURA * TAM_BLOCO + 1, SCRSTARTY + 1);
     printf("<                       >");
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 2);
-    printf("< Nível: %d              >", level);
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 3);
+    screenGotoxy(SCRSTARTX + LARGURA * TAM_BLOCO + 1, SCRSTARTY + 2);
+    printf("< Nível: %d              >", nivel);
+    screenGotoxy(SCRSTARTX + LARGURA * TAM_BLOCO + 1, SCRSTARTY + 3);
     printf("<                       >");
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 4);
-    printf("< Pontuação: %d          >", score);
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 5);
+    screenGotoxy(SCRSTARTX + LARGURA * TAM_BLOCO + 1, SCRSTARTY + 4);
+    printf("< Pontuação: %d          >", pontuacao);
+    screenGotoxy(SCRSTARTX + LARGURA * TAM_BLOCO + 1, SCRSTARTY + 5);
     printf("<                       >");
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 6);
+    screenGotoxy(SCRSTARTX + LARGURA * TAM_BLOCO + 1, SCRSTARTY + 6);
     printf("<                       >");
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 7);
+    screenGotoxy(SCRSTARTX + LARGURA * TAM_BLOCO + 1, SCRSTARTY + 7);
     printf("<                       >");
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 8);
+    screenGotoxy(SCRSTARTX + LARGURA * TAM_BLOCO + 1, SCRSTARTY + 8);
     printf("<                       >");
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 9);
+    screenGotoxy(SCRSTARTX + LARGURA * TAM_BLOCO + 1, SCRSTARTY + 9);
     printf("<                       >");
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 10);
+    screenGotoxy(SCRSTARTX + LARGURA * TAM_BLOCO + 1, SCRSTARTY + 10);
     printf("<                       >");
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 11);
+    screenGotoxy(SCRSTARTX + LARGURA * TAM_BLOCO + 1, SCRSTARTY + 11);
     printf("<                       >");
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 12);
+    screenGotoxy(SCRSTARTX + LARGURA * TAM_BLOCO + 1, SCRSTARTY + 12);
     printf("<                       >");
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 13);
+    screenGotoxy(SCRSTARTX + LARGURA * TAM_BLOCO + 1, SCRSTARTY + 13);
     printf("<                       >");
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 14);
+    screenGotoxy(SCRSTARTX + LARGURA * TAM_BLOCO + 1, SCRSTARTY + 14);
     printf("<                       >");
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 15);
+    screenGotoxy(SCRSTARTX + LARGURA * TAM_BLOCO + 1, SCRSTARTY + 15);
     printf("<                       >");
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 16);
+    screenGotoxy(SCRSTARTX + LARGURA * TAM_BLOCO + 1, SCRSTARTY + 16);
     printf("<                       >");
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 17);
+    screenGotoxy(SCRSTARTX + LARGURA * TAM_BLOCO + 1, SCRSTARTY + 17);
     printf("<                       >");
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 18);
+    screenGotoxy(SCRSTARTX + LARGURA * TAM_BLOCO + 1, SCRSTARTY + 18);
     printf("<                       >");
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 19);
+    screenGotoxy(SCRSTARTX + LARGURA * TAM_BLOCO + 1, SCRSTARTY + 19);
     printf("<                       >");
-    screenGotoxy(SCRSTARTX + WIDTH * BLOCK_SIZE + 1, SCRSTARTY + 20);
+    screenGotoxy(SCRSTARTX + LARGURA * TAM_BLOCO + 1, SCRSTARTY + 20);
     printf("<_______________________>");
 
 }
 
 // Função que remove linhas completas
-void removeFullLines() {
-    for (int j = 0; j < HEIGHT; j++) {
+void removeLinhaCompleta() {
+    for (int j = 0; j < ALTURA; j++) {
         int full = 1;
-        for (int i = 0; i < WIDTH; i++) {
+        for (int i = 0; i < LARGURA; i++) {
             if (!board[i][j]) {
                 full = 0;
                 break;
@@ -359,14 +359,14 @@ void removeFullLines() {
         }
         if (full) {
             for (int k = j; k > 0; k--) {
-                for (int i = 0; i < WIDTH; i++) {
+                for (int i = 0; i < LARGURA; i++) {
                     board[i][k] = board[i][k - 1];
                 }
             }
-            for (int i = 0; i < WIDTH; i++) {
+            for (int i = 0; i < LARGURA; i++) {
                 board[i][0] = 0;
             }
-            score += 100; // 100pts de linha completa
+            pontuacao += 100; // 100pts de linha completa
         }
     }
 }
@@ -398,7 +398,7 @@ int carregarRanking(Ranking *ranking) {
 }
 
 //
-void salvarPontuacaoNoRanking(int score) {
+void salvarPontuacaoNoRanking(int pontuacao) {
     char nome[50];
 
     printf("Digite seu nome para o ranking: ");
@@ -413,7 +413,7 @@ void salvarPontuacaoNoRanking(int score) {
     }
 
     // Adicionando no arquivo
-    fprintf(rankingFile, "%s %d\n", nome, score);
+    fprintf(rankingFile, "%s %d\n", nome, pontuacao);
 
     fclose(rankingFile);
 
@@ -504,7 +504,7 @@ void exibirGameOver() {
 }
 
 
-void exibirMenu(int score) {
+void exibirMenu(int pontuacao) {
     int opcao;
     char input[10];
     int pontuacaoSalva = 0;  // Flag -- verificar se a pontuação já foi salva e mostrar msg 
@@ -545,7 +545,7 @@ void exibirMenu(int score) {
         switch (opcao) {
             case 1:
                 if (!pontuacaoSalva) {  
-                    salvarPontuacaoNoRanking(score);
+                    salvarPontuacaoNoRanking(pontuacao);
                     pontuacaoSalva = 1;  // Marca flag -- pontuação salva
                 } else {
                     printf("A pontuação já foi salva!\n");
@@ -569,61 +569,63 @@ void exibirMenu(int score) {
     } while (opcao != 3);
 }
 
-void spawnPiece() {
-    currentPiece.x = WIDTH / 2 - 2;
-    currentPiece.y = 0;
-    currentPiece.type = rand() % 7;
-    currentPiece.rotation = 0;
-    if (checkCollision(&currentPiece)) {
+void gerarPeca() {
+    atualPeca.x = LARGURA / 2 - 2;
+    atualPeca.y = 0;
+    atualPeca.type = rand() % 7;
+    atualPeca.rotacao = 0;
+    if (checkColisao(&atualPeca)) {
         screenDestroy();
         exibirGameOver();
-        exibirMenu(score);
+        exibirMenu(pontuacao);
         exit(0);
     }
 }
 
-void dropPiece() {
-    currentPiece.y++;
-    if (checkCollision(&currentPiece)) {
-        currentPiece.y--;
-        placePiece(&currentPiece);
-        removeFullLines();
-        spawnPiece();
+void descePeca() {
+    atualPeca.y++;
+    if (checkColisao(&atualPeca)) {
+        atualPeca.y--;
+        colocaPeca(&atualPeca);
+        removeLinhaCompleta();
+        gerarPeca();
     }
 }
 
-void dropPieceMaisRapido() {
-    currentPiece.y++; // 1a descida
-
-    if (!checkCollision(&currentPiece)) {  // Verificando colisão dps de 1 descida
-        currentPiece.y++;  // Sem colisão, 2x descida
+void descePecaMaisRapido() {
+    atualPeca.y++; //1a descida
+    if (!checkColisao(&atualPeca)) {
+        atualPeca.y++; // S/ colisão? 2a descida
+        if (!checkColisao(&atualPeca)) {
+            atualPeca.y++; // S/ colisão? 3a descida
+        }
     }
-    
-    if (checkCollision(&currentPiece)) {  // Fez a segunda colisão verificar
-        currentPiece.y--;  // Colisão? Volta p/ posição anterior
-        placePiece(&currentPiece); 
-        removeFullLines();  
-        spawnPiece();  // Gerando +1 nova peça
+
+    if (checkColisao(&atualPeca)) {
+        atualPeca.y--;  // Volta a posição se colidir
+        colocaPeca(&atualPeca);
+        removeLinhaCompleta();
+        gerarPeca();  // Gerando nova peça
     }
 }
 
-void processInput() {
+void processaInput() {
     if (keyhit()) {
         int key = readch();
 
-        if (currentMode == 1) {  // Modo Clássico
+        if (atualModo == 1) {  // Modo Clássico
             switch (key) {
-                case 'a': movePiece(-1); break; // A == esquerda
-                case 'd': movePiece(1); break; // D -- direita
-                case 's': dropPiece(); break;
-                case 'w': rotatePiece(); break;
+                case 'a': movePeca(-1); break; // A == esquerda
+                case 'd': movePeca(1); break; // D -- direita
+                case 's': descePeca(); break;
+                case 'w': rotacionaPeca(); break;
             }
-        } else if (currentMode == 2) {  // Modo Desafio
+        } else if (atualModo == 2) {  // Modo Desafio
             switch (key) {
-                case 'a': movePiece(1); break;  // A == direita 
-                case 'd': movePiece(-1); break; // D == esquerda 
-                case 's': dropPieceMaisRapido(); break; // desce 2x mais
-                case 'w': rotatePieceContrario(); break; // anti-horario
+                case 'a': movePeca(1); break;  // A == direita 
+                case 'd': movePeca(-1); break; // D == esquerda 
+                case 's': descePecaMaisRapido(); break; // desce 2x mais
+                case 'w': rotacionaPecaContrario(); break; // anti-horario
             }
         }
     }
@@ -632,28 +634,30 @@ void processInput() {
 void screenDrawBorders();
 void exibirTelaInicial();
 void exibirInstrucoes(int modo);
-int checkCollision(Piece *piece);
-void placePiece(Piece *piece);
-void rotatePiece();
-void movePiece(int dx);
-void drawPiece(Piece *piece);
+int checkColisao(Peca *peca);
+void colocaPeca(Peca *peca);
+void rotacionaPeca();
+void rotacionaPecaContrario();
+void movePeca(int dx);
+void desenhaPeca(Peca *peca);
 void drawBoard();
-void removeFullLines();
+void removeLinhaCompleta();
 void salvarRanking(Ranking *ranking, int numJogadores);
 int carregarRanking(Ranking *ranking);
-void salvarPontuacaoNoRanking(int score);
+void salvarPontuacaoNoRanking(int pontuacao);
 void exibirRanking();
 void exibirGameOver();
-void exibirMenu(int score);
-void spawnPiece();
-void dropPiece();
-void processInput();
-//add dropPieceMaisRapido, rotatePieceContrario aqui dps (org ordem)
+void exibirMenu(int pontuacao);
+void gerarPeca();
+void descePeca();
+void descePecaMaisRapido();
+void processaInput();
+//add descePecaMaisRapido, rotacionaPecaContrario aqui dps (org ordem)
 
 int main() {
     exibirTelaInicial();
     int modoSelecionado = escolherModo();
-    currentMode = modoSelecionado;
+    atualModo = modoSelecionado;
 
     exibirInstrucoes(modoSelecionado);
 
@@ -662,17 +666,17 @@ int main() {
     keyboardInit();
     timerInit(500); // Intervalo de 500ms
 
-    spawnPiece(); // Gerando a primeira peça
+    gerarPeca(); // Gerando a primeira peça
 
     while (1) {
-        processInput(); // Entradas do usuário -- movimentação e rotação da peça!
+        processaInput(); // Entradas do usuário -- movimentação e rotação da peça!
         
         if (timerTimeOver()) { // Verificando se o tempo acabou p/ descer a peça
-            dropPiece();
+            descePeca();
         }
 
         drawBoard(); 
-        drawPiece(&currentPiece);
+        desenhaPeca(&atualPeca);
         screenUpdate();         
     }
 
