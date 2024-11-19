@@ -5,25 +5,7 @@
   />
 </p>
 
-<p align="center">
-  <img
-    src="https://img.shields.io/github/repo-size/Sofia-Saraiva/Semester3-CESAR-School?style=flat"
-    alt="Repository Size"
-  />
-  <img
-    src="https://img.shields.io/github/languages/count/Sofia-Saraiva/Semester3-CESAR-School?style=flat&logo=python"
-    alt="Language Count"
-  />
-  <img
-    src="https://img.shields.io/github/commit-activity/t/Sofia-Saraiva/Semester3-CESAR-School?style=flat&logo=github"
-    alt="Commit Activity"
-  />
-  <a href="LICENSE.md"
-    ><img
-      src="https://img.shields.io/github/license/Sofia-Saraiva/Semester3-CESAR-School"
-      alt="License"
-  /></a>
-</p>
+
 
 Bem-vindo ao Blocky, uma recriação do clássico jogo de Tetris para ser jogado diretamente no terminal para criar uma experiência divertida e nostálgica! Este projeto foi desenvolvido em C e utiliza uma biblioteca [Acesse Aqui](https://github.com/tgfb/cli-lib/) 
 
@@ -73,6 +55,14 @@ Registre suas pontuações e veja como você se compara com outros jogadores.
 
 **Interface com Bordas Dinâmicas:**
 Desenho automático das bordas delimitando a área de jogo.
+
+**Funcionalidade Extra:**
+Prepare-se para uma experiência intensa e diferenciada!<br>
+- Ao começar o jogo e selecionar o modo desafio, o jogo inicia um modo invertido!
+        -       Neste modo, os controles são invertidos!                            
+                 A: Mover para a Direita                                            
+                 D: Mover para a Esquerda      
+                 S: Desce duas vezes mais rápido do que o jogo clássico   
 
 
 ## 🕹️ Como Jogar
