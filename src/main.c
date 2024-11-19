@@ -9,27 +9,7 @@
 #define HEIGHT 20
 #define BLOCK_SIZE 2
 
-//Todas as nossas funções -- sempre add novas aqui pra facilitar!
-void screenDrawBorders();
-void exibirTelaInicial();
-void exibirInstrucoes();
-int checkCollision();
-void placePiece();
-void rotatePiece();
-void movePiece();
-void drawPiece();
-void drawBoard();
-void removeFullLines();
-void salvarRanking();
-int carregarRanking();
-void salvarPontuacaoNoRanking();
-void exibirRanking();
-void exibirGameOver();
-void exibirMenu();
-void spawnPiece();
-void dropPiece();
-void processInput();
-//add dropPieceMaisRapido, rotatePieceContrario aqui dps (org ordem)
+//Todas as nossas funções listadas antes da main -- sempre add novas lá pra facilitar!
 
 int level = 1; 
 int score = 0;
@@ -648,6 +628,27 @@ void processInput() {
         }
     }
 }
+
+void screenDrawBorders();
+void exibirTelaInicial();
+void exibirInstrucoes(int modo);
+int checkCollision(Piece *piece);
+void placePiece(Piece *piece);
+void rotatePiece();
+void movePiece(int dx);
+void drawPiece(Piece *piece);
+void drawBoard();
+void removeFullLines();
+void salvarRanking(Ranking *ranking, int numJogadores);
+int carregarRanking(Ranking *ranking);
+void salvarPontuacaoNoRanking(int score);
+void exibirRanking();
+void exibirGameOver();
+void exibirMenu(int score);
+void spawnPiece();
+void dropPiece();
+void processInput();
+//add dropPieceMaisRapido, rotatePieceContrario aqui dps (org ordem)
 
 int main() {
     exibirTelaInicial();
