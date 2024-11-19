@@ -113,18 +113,18 @@ Divirta-se!
 
 ## 😅 Dificuldades Encontradas
 
-**Sincronização entre Frames :**
-- Ajusta o tempo de queda das peças para níveis progressivos que foram solicitados.
-**Colisões Rotacionais :**
-- Garantir que as peças não ultrapassem os limites durante rotações realizadas várias verificações.
-**Centralização de Conteúdo :**
-- Manter o título e mensagens centralizados, independentemente do tamanho da janela, exige cálculos precisos.
- Gerenciamento de Tela 
- - Garantir que as bordas e elementos da interface não pisquem ou sejam sobrescritos, especialmente em consoles de terminal com renderização lenta.
-**Rotação de Peças:**
-- Implementar a rotação das peças de forma consistente e sem colisões foi desafiador, especialmente para peças próximas às bordas.
-**Persistência do Ranking:**
-- Manipular arquivos para salvar e carregar dados exigiu cuidados com formatação e ordenação para garantir a integridade do ranking.
+**1. Sincronização entre Frames:**
+Ajusta o tempo de queda das peças para níveis progressivos que foram solicitados.<br>
+**2. Colisões Rotacionais :**
+Garantir que as peças não ultrapassem os limites durante rotações realizadas várias verificações.<br>
+**3. Centralização de Conteúdo :**
+Manter o título e mensagens centralizados, independentemente do tamanho da janela, exige cálculos precisos.<br>
+**4. Gerenciamento de Tela:**
+Garantir que as bordas e elementos da interface não pisquem ou sejam sobrescritos, especialmente em consoles de terminal com renderização lenta.<br>
+**5. Rotação de Peças:**
+Implementar a rotação das peças de forma consistente e sem colisões foi desafiador, especialmente para peças próximas às bordas.<br>
+**6. Persistência do Ranking:**
+Manipular arquivos para salvar e carregar dados exigiu cuidados com formatação e ordenação para garantir a integridade do ranking.<br>
 
 
 ## 👩‍💻 Membros & Perfis do GitHub
